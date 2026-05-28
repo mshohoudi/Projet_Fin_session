@@ -17,8 +17,8 @@ projet_thermoelastique/
 ├── source/                        # Code source du projet
 │   ├── __init__.py
 │   ├── gestion_donnees.py      # Importation et nettoyage des données ANSYS
-│   ├── solveur_ef.py           # Solveur analytique 
-│   ├── solveur_ef.py           # Solveur analytique 
+│   ├── solveur_ef.py           # Solveur éléments finis 
+│   ├── solveur_analytique.py   # Solveur analytique 
 │   ├── modele_substitution.py  # Entraînement et prédiction (Machine Learning)
 │   └── visualisation.py        # Génération des heatmaps 3D
 │
