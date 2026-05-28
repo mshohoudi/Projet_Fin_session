@@ -1,0 +1,14 @@
+# 1. Paramètres du logiciel PyCharm
+.idea/
+
+# 2. Environnements virtuels Python
+venv/
+env/
+
+# 3. Fichiers temporaires et cache Python
+__pycache__/
+*.pyc
+
+# 4. Données brutes et volumineuses de simulation (très important)
+donnees/*.csv
+donnees/*.txt
