@@ -9,6 +9,3 @@ env/
 __pycache__/
 *.pyc
 
-# 4. Données brutes et volumineuses de simulation (très important)
-donnees/*.csv
-donnees/*.txt
