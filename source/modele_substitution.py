@@ -1,45 +1,61 @@
 import numpy as np
-from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.model_selection import KFold
 from sklearn.metrics import r2_score
 
 
 class ModeleSubstitution:
     def __init__(self):
-        # Utilisation de l'algorithme Random Forest (très robuste pour les données FEA non linéaires)
-        # n_estimators=100 signifie que le modèle utilisera 100 "arbres de décision" pour prédire
+        """
+        Initialisation du modèle de Machine Learning (Random Forest).
+        """
         self.modele = RandomForestRegressor(n_estimators=100, random_state=42)
         self.est_entraine = False
 
     def entrainer(self, x_entrees, y_sorties):
-        print(" -> Division des données en ensembles d'entraînement (80%) et de test (20%)...")
-        # Séparation des données pour valider la précision du modèle sur des points qu'il n'a jamais vus
-        x_train, x_test, y_train, y_test = train_test_split(
-            x_entrees, y_sorties, test_size=0.2, random_state=42
-        )
+        """
+        Entraîne le modèle en utilisant la Validation Croisée (K-Fold)
+        pour garantir la stabilité, puis l'entraîne sur 100% des données.
+        """
+        print(" -> Application de la Validation Croisée (K-Fold avec 5 plis)...")
 
-        print(" -> Entraînement du modèle Random Forest en cours...")
-        self.modele.fit(x_train, y_train)
+        # Séparation en 5 sous-ensembles (Chaque sous-ensemble servira de test une fois)
+        kf = KFold(n_splits=5, shuffle=True, random_state=42)
+
+        scores_r2_vm = []
+        scores_r2_x = []
+        scores_r2_dep = []
+
+        # Boucle d'entraînement et de test pour chaque pli (Fold)
+        for train_index, test_index in kf.split(x_entrees):
+            # Séparation 80% Entraînement / 20% Test pour cette itération
+            X_train, X_test = x_entrees[train_index], x_entrees[test_index]
+            y_train, y_test = y_sorties[train_index], y_sorties[test_index]
+
+            # Entraînement sur le 80% actuel
+            self.modele.fit(X_train, y_train)
+            y_pred = self.modele.predict(X_test)
+
+            # Enregistrement des scores de précision sur le 20% actuel
+            scores_r2_vm.append(r2_score(y_test[:, 0], y_pred[:, 0]))
+            scores_r2_x.append(r2_score(y_test[:, 1], y_pred[:, 1]))
+            scores_r2_dep.append(r2_score(y_test[:, 2], y_pred[:, 2]))
+
+        # Affichage de la moyenne et de l'écart-type (stabilité) des 5 itérations
+        print(" -> Résultats de la Validation Croisée (Moyenne des 5 entraînements) :")
+        print(f"    * Précision Von-Mises   : {np.mean(scores_r2_vm):.4f} (Stabilité: ±{np.std(scores_r2_vm):.4f})")
+        print(f"    * Précision Normale X   : {np.mean(scores_r2_x):.4f} (Stabilité: ±{np.std(scores_r2_x):.4f})")
+        print(f"    * Précision Déplacement : {np.mean(scores_r2_dep):.4f} (Stabilité: ±{np.std(scores_r2_dep):.4f})")
+
+        print(" -> Entraînement final du modèle sur 100% des données pour le mode interactif...")
+        # Une fois la fiabilité prouvée, on entraîne sur toutes les données pour un maximum de précision en production
+        self.modele.fit(x_entrees, y_sorties)
         self.est_entraine = True
 
-        # Évaluation des performances sur les 20% de données de test
-        y_pred = self.modele.predict(x_test)
-
-        # Le R2 Score varie de 0 à 1 (1 étant une prédiction parfaite)
-        r2_contrainte = r2_score(y_test[:, 0], y_pred[:, 0])
-        r2_deplacement = r2_score(y_test[:, 1], y_pred[:, 1])
-
-        print(f" -> Précision (R2 Score) - Contrainte   : {r2_contrainte:.4f}")
-        print(f" -> Précision (R2 Score) - Déplacement  : {r2_deplacement:.4f}")
-
-    def predire(self, x_nouvelle_entree):
-        # Cette fonction sera utilisée plus tard pour faire des prédictions instantanées
+    def predire(self, x_entree):
+        """
+        Effectue une prédiction si le modèle est entraîné.
+        """
         if not self.est_entraine:
-            raise ValueError("Erreur : Le modèle doit être entraîné avant de faire des prédictions.")
-
-        # S'assurer que l'entrée est sous le bon format mathématique (matrice 2D)
-        x_nouvelle_entree = np.array(x_nouvelle_entree)
-        if x_nouvelle_entree.ndim == 1:
-            x_nouvelle_entree = x_nouvelle_entree.reshape(1, -1)
-
-        return self.modele.predict(x_nouvelle_entree)
+            raise ValueError("Le modèle doit être entraîné avant de faire des prédictions.")
+        return self.modele.predict(x_entree)
