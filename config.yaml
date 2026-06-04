@@ -1,0 +1,19 @@
+# Configuration du Système Thermoélastique
+
+geometrie:
+  longueur: 1.0
+  base: 0.1
+  hauteur: 0.1
+
+materiau:
+  module_young: 200e9
+  coeff_thermique: 1.2e-5
+
+parametres_ml:
+  n_estimators: 100
+  k_fold_splits: 5
+  random_state: 42
+  filtre_saint_venant: 0.09
+
+chemins:
+  dossier_donnees: "./donnees"
