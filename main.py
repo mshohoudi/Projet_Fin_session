@@ -1,35 +1,54 @@
 import os
+import yaml
 import numpy as np
 from source.gestion_donnees import GestionnaireDonnees
 from source.modele_substitution import ModeleSubstitution
 from source.visualisation import Visualiseur3D
+from source.solveur_analytique import SolveurAnalytique
+from source.solveur_ef import SolveurFEA1D
+
+
+def charger_configuration():
+    """Charge les paramètres depuis le fichier config.yaml"""
+    chemin_config = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'config.yaml')
+    with open(chemin_config, 'r', encoding='utf-8') as fichier:
+        return yaml.safe_load(fichier)
 
 
 def main():
     print("=== Lancement du Système Thermoélastique (Couplage FEA & ML) ===\n")
 
-    # Définir le chemin absolu vers le dossier des données
-    chemin_dossier_actuel = os.path.dirname(os.path.abspath(__file__))
-    dossier_donnees = os.path.join(chemin_dossier_actuel, "donnees")
-
-    print("[ÉTAPE 1] Importation des données paramétriques (32 fichiers)...")
+    # --- LECTURE DU FICHIER YAML ---
     try:
-        # Initialiser le gestionnaire de données et préparer les ensembles pour le ML
+        config = charger_configuration()
+        print("[ÉTAPE 0] Configuration YAML chargée avec succès.")
+    except Exception as e:
+        print(f" [ERREUR] Impossible de charger config.yaml : {e}")
+        return
+
+    chemin_dossier_actuel = os.path.dirname(os.path.abspath(__file__))
+    nom_dossier = config['chemins']['dossier_donnees'].replace('./', '')
+    dossier_donnees = os.path.join(chemin_dossier_actuel, nom_dossier)
+
+    print("\n[ÉTAPE 1] Importation des données paramétriques...")
+    try:
         gestionnaire = GestionnaireDonnees(dossier_donnees)
         x_entrees, y_sorties = gestionnaire.preparer_donnees_ml()
         print(" -> Succès ! Les données sont prêtes pour l'entraînement.")
-        print(f" -> Taille totale de la base de données : {x_entrees.shape[0]} points analysés.")
     except Exception as e:
         print(f" [ERREUR] Problème lors de la lecture des données : {e}")
         return
 
     print("\n[ÉTAPE 2] Entraînement du modèle de substitution (Machine Learning)...")
-    # Initialiser et entraîner le modèle d'intelligence artificielle (Random Forest)
-    modele_ia = ModeleSubstitution()
+    params_ml = config['parametres_ml']
+    modele_ia = ModeleSubstitution(
+        n_estimators=params_ml['n_estimators'],
+        k_fold_splits=params_ml['k_fold_splits'],
+        random_state=params_ml['random_state']
+    )
     modele_ia.entrainer(x_entrees, y_sorties)
 
     print("\n[ÉTAPE 3] Mode Interactif - Saisie Utilisateur")
-    # Obtenir la force et la température de l'utilisateur via la console
     try:
         print("\n---------------------------------------------------")
         force_utilisateur = float(input(" -> Entrez la force appliquée (en kN, entre 10 et 40) : "))
@@ -39,54 +58,83 @@ def main():
         print(" [ERREUR] Veuillez entrer des nombres valides.")
         return
 
+    temp_ambiante = 20.0
+    delta_t = temp_utilisateur - temp_ambiante
+
     print(
-        f" -> Génération des prédictions instantanées pour F = {force_utilisateur} kN et T = {temp_utilisateur} °C ...")
+        f" -> Génération des prédictions et calculs pour F = {force_utilisateur} kN et T = {temp_utilisateur} °C ...\n")
 
-    # Extraire les coordonnées géométriques (seulement les colonnes X, Y, Z des 621 premiers nœuds)
+    # --- 1. Résolution par Intelligence Artificielle (ML) ---
     noeuds_geometrie = x_entrees[:621, :3]
-
-    # Créer des colonnes contenant les valeurs de l'utilisateur pour chaque point de la géométrie
     colonne_force = np.full((noeuds_geometrie.shape[0], 1), force_utilisateur)
     colonne_temp = np.full((noeuds_geometrie.shape[0], 1), temp_utilisateur)
-
-    # Construire la matrice d'entrée finale à 5 dimensions (X, Y, Z, Force, Température) pour la prédiction
     entrees_prediction = np.hstack((noeuds_geometrie, colonne_force, colonne_temp))
 
-    # Prédire instantanément la distribution des contraintes et des déplacements
     y_predictions = modele_ia.predire(entrees_prediction)
+    contraintes_vm_predites = y_predictions[:, 0]
+    contraintes_x_predites = y_predictions[:, 1]
+    deplacements_predits = y_predictions[:, 2]
 
-    contraintes_predites = y_predictions[:, 0]
-    deplacements_predits = y_predictions[:, 1]
+    # --- APPLICATION DU PRINCIPE DE SAINT-VENANT (Depuis YAML) ---
+    filtre_sv = config['parametres_ml']['filtre_saint_venant']
+    masque_hors_singularite = noeuds_geometrie[:, 0] > filtre_sv
 
-    # --- NOUVEAU CODE : Calcul et affichage des valeurs maximales ---
-    max_contrainte = np.max(contraintes_predites)
-    max_deplacement = np.max(deplacements_predits)
+    max_contrainte_vm_ml = np.max(contraintes_vm_predites[masque_hors_singularite])
+    max_contrainte_x_ml = np.max(np.abs(contraintes_x_predites[masque_hors_singularite]))
+    max_deplacement_ml = np.max(np.abs(deplacements_predits))
 
-    print(f"\n[RÉSULTATS CLÉS] Pour F = {force_utilisateur} kN et T = {temp_utilisateur} °C :")
-    print(f" -> Contrainte de Von-Mises Maximale : {max_contrainte:.2f} Pa")
-    print(f" -> Déplacement Total Maximal        : {max_deplacement:.6f} m")
-    print("---------------------------------------------------\n")
-    # ---------------------------------------------------------------
+    # --- EXTRACTION DES PROPRIÉTÉS PHYSIQUES (Depuis YAML) ---
+    geom = config['geometrie']
+    mat = config['materiau']
+
+    # --- 2. Résolution par Théorie Analytique (Euler-Bernoulli) ---
+    solveur_ana = SolveurAnalytique(
+        longueur=geom['longueur'], base=geom['base'], hauteur=geom['hauteur'],
+        module_young=mat['module_young'], coeff_thermique=mat['coeff_thermique']
+    )
+    max_deplacement_ana = solveur_ana.calculer_deplacement_max(force_utilisateur, delta_t)
+    max_contrainte_ana = solveur_ana.calculer_contrainte_max(force_utilisateur)
+    max_contrainte_vm_ana = abs(max_contrainte_ana)
+
+    # --- 3. Résolution par Éléments Finis 1D (FEA) ---
+    solveur_fea = SolveurFEA1D(
+        longueur=geom['longueur'], base=geom['base'], hauteur=geom['hauteur'],
+        module_young=mat['module_young'], coeff_thermique=mat['coeff_thermique']
+    )
+    max_deplacement_fea, max_contrainte_x_fea = solveur_fea.calculer_resultats(force_utilisateur, delta_t)
+
+    # --- AFFICHAGE DU RAPPORT COMPARATIF ---
+    print("==========================================================")
+    print("        RAPPORT DE VALIDATION CROISÉE (TRIPLE-CHECK)      ")
+    print("==========================================================")
+
+    print("[1] DÉPLACEMENT DIRECTIONNEL MAXIMAL - AXE Y (m) :")
+    print(f"    - Analytique (Euler-Bernoulli) : {max_deplacement_ana:.6f} m")
+    print(f"    - Numérique (FEA 1D)           : {max_deplacement_fea:.6f} m")
+    print(f"    - Prédiction IA (ML 3D)        : {max_deplacement_ml:.6f} m\n")
+
+    print("[2] CONTRAINTE NORMALE MAXIMALE - AXE X (Pa) :")
+    print(f"    - Analytique (Théorie Flexion) : {max_contrainte_ana:.2f} Pa")
+    print(f"    - Numérique (FEA 1D)           : {max_contrainte_x_fea:.2f} Pa")
+    print(f"    - Prédiction IA (ML 3D)* : {max_contrainte_x_ml:.2f} Pa\n")
+
+    print("[3] CONTRAINTE DE VON-MISES MAXIMALE (Pa) :")
+    print(f"    - Analytique (Théorie 1D)      : {max_contrainte_vm_ana:.2f} Pa")
+    print(f"    - Prédiction IA (ML 3D)* : {max_contrainte_vm_ml:.2f} Pa")
+    print(f"  * Note: IA filtrée par le principe de Saint-Venant (X > {filtre_sv}m)")
+    print("==========================================================\n")
 
     print("[ÉTAPE 4] Affichage des Heatmaps 3D...")
     visualiseur = Visualiseur3D()
-
-    # Générer le graphique 3D pour la distribution des contraintes
-    visualiseur.tracer_heatmap_3d(
-        coordonnees=noeuds_geometrie,
-        valeurs=contraintes_predites,
-        titre=f"Contraintes Prédites (ML) | F = {force_utilisateur} kN, T = {temp_utilisateur} °C",
-        nom_unite="Contrainte (Pa)"
-    )
-
-    # Générer le graphique 3D pour les déplacements totaux
-    visualiseur.tracer_heatmap_3d(
-        coordonnees=noeuds_geometrie,
-        valeurs=deplacements_predits,
-        titre=f"Déplacements Prédits (ML) | F = {force_utilisateur} kN, T = {temp_utilisateur} °C",
-        nom_unite="Déplacement (m)"
-    )
-
+    visualiseur.tracer_heatmap_3d(noeuds_geometrie, deplacements_predits,
+                                  f"Déplacements Prédits Y (ML) | F={force_utilisateur}kN, T={temp_utilisateur}°C",
+                                  "Déplacement Y (m)")
+    visualiseur.tracer_heatmap_3d(noeuds_geometrie, contraintes_x_predites,
+                                  f"Contrainte Normale X (ML) | F={force_utilisateur}kN, T={temp_utilisateur}°C",
+                                  "Contrainte X (Pa)")
+    visualiseur.tracer_heatmap_3d(noeuds_geometrie, contraintes_vm_predites,
+                                  f"Contrainte Von-Mises (ML) | F={force_utilisateur}kN, T={temp_utilisateur}°C",
+                                  "Contrainte VM (Pa)")
     print(" -> Processus terminé avec succès !")
 
 
