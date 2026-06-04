@@ -2,24 +2,20 @@ import os
 import pandas as pd
 import numpy as np
 
-
 class GestionnaireDonnees:
     def __init__(self, dossier_donnees):
-        # Maintenant, nous ne prenons que le chemin du dossier contenant les 32 fichiers
         self.dossier_donnees = dossier_donnees
         self.donnees_combinees = None
 
     def charger_tous_les_fichiers(self):
         toutes_les_donnees = []
-
-        # Lister tous les fichiers dans le dossier
         fichiers = os.listdir(self.dossier_donnees)
 
-        # Filtrer uniquement les fichiers de contrainte
-        fichiers_contrainte = [f for f in fichiers if f.startswith('contrainte_') and f.endswith('.txt')]
+        # Filtrer uniquement les fichiers de contrainte Von-Mises (point de départ)
+        fichiers_contrainte = [f for f in fichiers if f.startswith('contrainte_F') and f.endswith('.txt')]
 
         for fichier_c in fichiers_contrainte:
-            # Extraire la Force et la Température du nom du fichier (ex: contrainte_F10_T20.txt)
+            # Extraire la Force et la Température
             nom_sans_extension = fichier_c.replace('.txt', '')
             parties = nom_sans_extension.split('_')
 
@@ -28,42 +24,54 @@ class GestionnaireDonnees:
 
             chemin_c = os.path.join(self.dossier_donnees, fichier_c)
 
-            # Trouver le fichier de déplacement correspondant
-            fichier_d = fichier_c.replace('contrainte', 'deplacement')
+            # Chercher le fichier de déplacement Y
+            fichier_d = fichier_c.replace('contrainte', 'deplacement_y')
             chemin_d = os.path.join(self.dossier_donnees, fichier_d)
 
-            if not os.path.exists(chemin_d):
-                print(f" [AVERTISSEMENT] Le fichier {fichier_d} est introuvable. On l'ignore.")
+            # Chercher le fichier de contrainte X
+            fichier_cx = fichier_c.replace('contrainte', 'contrainte_x')
+            chemin_cx = os.path.join(self.dossier_donnees, fichier_cx)
+
+            # Vérifier que les 3 fichiers existent pour cette configuration
+            if not os.path.exists(chemin_d) or not os.path.exists(chemin_cx):
+                print(f" [AVERTISSEMENT] Fichiers manquants pour {fichier_c}. On l'ignore.")
                 continue
 
-            # Charger les données brutes
-            df_c = pd.read_csv(chemin_c, sep='\t', skiprows=1, names=['Noeud', 'X', 'Y', 'Z', 'Contrainte'])
-            df_d = pd.read_csv(chemin_d, sep='\t', skiprows=1, names=['Noeud', 'X', 'Y', 'Z', 'Deplacement'])
+            try:
+                # skiprows=1 permet d'ignorer la ligne d'en-tête (X Location, etc.)
+                df_c = pd.read_csv(chemin_c, sep='\t', skiprows=1, names=['Noeud', 'X', 'Y', 'Z', 'Contrainte'])
+                df_d = pd.read_csv(chemin_d, sep='\t', skiprows=1, names=['Noeud', 'X', 'Y', 'Z', 'Deplacement'])
+                df_cx = pd.read_csv(chemin_cx, sep='\t', skiprows=1, names=['Noeud', 'X', 'Y', 'Z', 'Contrainte_X'])
+            except Exception as e:
+                print(f" [ERREUR] Format incorrect dans les fichiers associés à {fichier_c}: {e}")
+                continue
 
-            # Fusionner selon le numéro de nœud
+            # Fusionner les 3 fichiers selon le numéro de nœud
             df_fusion = pd.merge(df_c, df_d[['Noeud', 'Deplacement']], on='Noeud')
+            df_fusion = pd.merge(df_fusion, df_cx[['Noeud', 'Contrainte_X']], on='Noeud')
 
-            # Ajouter les nouvelles variables paramétriques (Features)
+            # Ajouter les variables paramétriques (Features)
             df_fusion['Force'] = force
             df_fusion['Temperature'] = temperature
 
             toutes_les_donnees.append(df_fusion)
 
-        # Combiner les 16 DataFrames en un seul super-DataFrame pour l'entraînement
+        if not toutes_les_donnees:
+            raise ValueError("Aucune donnée valide n'a pu être chargée. Vérifiez vos fichiers.")
+
         self.donnees_combinees = pd.concat(toutes_les_donnees, ignore_index=True)
-        print(f" -> {len(fichiers_contrainte)} configurations chargées avec succès.")
+        print(f" -> {len(toutes_les_donnees)} configurations (x3 fichiers) chargées avec succès.")
 
         return self.donnees_combinees
 
     def preparer_donnees_ml(self):
-        # Séparer les caractéristiques (Features) et les cibles (Targets)
         if self.donnees_combinees is None:
             self.charger_tous_les_fichiers()
 
         # NOUVEAU FORMAT D'ENTRÉE : 5 dimensions (X, Y, Z, Force, Température)
         x_entrees = self.donnees_combinees[['X', 'Y', 'Z', 'Force', 'Temperature']].values
 
-        # SORTIES : 2 dimensions (Contrainte, Déplacement)
-        y_sorties = self.donnees_combinees[['Contrainte', 'Deplacement']].values
+        # SORTIES : 3 dimensions requises pour le projet (Contrainte VM, Contrainte X, Déplacement Y)
+        y_sorties = self.donnees_combinees[['Contrainte', 'Contrainte_X', 'Deplacement']].values
 
         return x_entrees, y_sorties
