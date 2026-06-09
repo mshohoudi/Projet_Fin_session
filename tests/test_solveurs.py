@@ -13,7 +13,9 @@ class TestSolveurs(unittest.TestCase):
         self.alpha = 1.2e-5
 
         self.force_kn = 15.0
-        self.delta_t = 80.0
+        self.temperature_ambiante = 20.0
+        self.temperature_appliquee = 100.0
+
 
         # Initialisation des solveurs
         self.solveur_ana = SolveurAnalytique(self.L, self.b, self.h, self.E, self.alpha)
@@ -21,12 +23,12 @@ class TestSolveurs(unittest.TestCase):
 
     def test_solveur_analytique(self):
         # Vérification du déplacement
-        deplacement = self.solveur_ana.calculer_deplacement_max(self.force_kn, self.delta_t)
+        deplacement = self.solveur_ana.calculer_deplacement_max(self.force_kn, self.temperature_ambiante, self.temperature_appliquee)
         self.assertIsNotNone(deplacement)
         self.assertTrue(deplacement > 0.0, "Déplacement doit être positif")
 
         # Vérification de la contrainte
-        contrainte = self.solveur_ana.calculer_contrainte_max(self.force_kn, position_x=0.09)
+        contrainte = self.solveur_ana.calculer_contrainte_max(self.force_kn)
         self.assertIsNotNone(contrainte)
         self.assertTrue(contrainte > 0.0, "Contrainte doit être positive")
 
