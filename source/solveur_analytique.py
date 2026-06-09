@@ -18,14 +18,25 @@ class SolveurAnalytique:
         Doit retourner le déplacement total maximal en mètres (m).
         Attention : Convertir force_kn en Newtons !
         """
-        F = force_kn * 1000
-        delta_T = temperature_appliquee - temperature_ambiante
+        force_n = force_kn * 1000
+        delta_t = temperature_appliquee - temperature_ambiante
 
-        Uy = (F * self.L ** 3) / (3 * self.E * self.I)
-        Ux = self.alpha * self.L * delta_T
+        Uy = (force_n * self.L ** 3) / (3 * self.E * self.I)
+        Ux = self.alpha * self.L * delta_t
 
         delta_max = math.sqrt(Ux ** 2 + Uy ** 2)
 
         return delta_max
 
 
+    def calculer_contrainte_max(self, force_kn):
+        """
+        Retourne la contrainte maximale en Pascals (Pa).
+        force_kn est convertie en Newtons.
+        """
+        force_n = force_kn * 1000
+        moment_force_nm = force_n * self.L
+
+        sigma_max = (moment_force_nm * self.c) / self.I
+
+        return sigma_max
