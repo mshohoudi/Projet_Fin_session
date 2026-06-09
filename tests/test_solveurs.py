@@ -37,6 +37,11 @@ class TestSolveurs(unittest.TestCase):
         deplacement_max =  self.solveur_ana.calculer_deplacement_max(self.force_kn, self.temperature_ambiante, self.temperature_appliquee)
         self.assertAlmostEqual(deplacement_max, 0.00314985,5,"Les deux valeurs ne sont pas égales à une précision de 5 décimales" )
 
+    def test_contrainte_max(self):
+        # Vérification du déplacement max en valeur numérique
+        deplacement_max =  self.solveur_ana.calculer_contrainte_max(self.force_kn)
+        self.assertAlmostEqual(deplacement_max, 90000000.0,5,"Les deux valeurs ne sont pas égales à une précision de 5 décimales" )
+
 
 
     def test_solveur_fea(self):
