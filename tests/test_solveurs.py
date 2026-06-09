@@ -32,6 +32,13 @@ class TestSolveurs(unittest.TestCase):
         self.assertIsNotNone(contrainte)
         self.assertTrue(contrainte > 0.0, "Contrainte doit être positive")
 
+    def test_deplacement_max(self):
+        # Vérification du déplacement max en valeur numérique
+        deplacement_max =  self.solveur_ana.calculer_deplacement_max(self.force_kn, self.temperature_ambiante, self.temperature_appliquee)
+        self.assertAlmostEqual(deplacement_max, 0.00314985,5,"Les deux valeurs ne sont pas égales à une précision de 5 décimales" )
+
+
+
     def test_solveur_fea(self):
         # Vérification des résultats FEA
         deplacement, contrainte = self.solveur_fea.calculer_resultats(self.force_kn, self.delta_t)
