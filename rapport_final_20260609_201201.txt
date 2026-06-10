@@ -1,0 +1,55 @@
+
+══════════════════════════════════════════════════════════════
+  RAPPORT COMPARATIF — RÉSULTATS THERMOÉLASTIQUES
+══════════════════════════════════════════════════════════════
+  Force appliquée  : 15.0 kN  (15000 N)
+  Température      : 178.0 °C
+──────────────────────────────────────────────────────────────
+
+  FLÈCHE MAXIMALE (en bout, x = L)
+
+  Méthode                   Valeur [mm]
+  ---------------------- --------------
+  Analytique                     3.0000
+  FEA 1D (Euler-Bernoulli)         3.0000
+  ML 3D (Random Forest)          1.7086
+
+  Écart FEA / Analytique  : 0.00 %
+  Écart ML  / Analytique  : 43.05 %
+
+──────────────────────────────────────────────────────────────
+  CONTRAINTE VON MISES MAXIMALE
+
+  Méthode                  Valeur [MPa]
+  ---------------------- --------------
+  Analytique                     469.20
+  FEA 1D (Euler-Bernoulli)         469.20
+  ML 3D (Random Forest)          489.68
+
+  Écart FEA / Analytique  : 0.00 %
+  Écart ML  / Analytique  : 4.36 %
+
+──────────────────────────────────────────────────────────────
+  CONTRAINTE NORMALE σ_x MAXIMALE
+
+  Méthode                  Valeur [MPa]
+  ---------------------- --------------
+  Analytique                     469.20
+  FEA 1D (Euler-Bernoulli)         469.20
+  ML 3D (Random Forest)          489.70
+
+──────────────────────────────────────────────────────────────
+  PRÉCISION DU MODÈLE ML (Validation K-Fold)
+
+  Cible                          R² moyen    ± écart-type
+  ---------------------------- ----------  --------------
+  Von Mises                        0.9997          0.0000
+  Contrainte X                     0.9999          0.0000
+  Déplacement Y                    1.0000          0.0000
+
+──────────────────────────────────────────────────────────────
+  NOTE : Principe de Saint-Venant appliqué
+  Les singularités à l'encastrement (x < 0.09 m) et en bout
+  (x > 0.91 m) sont exclues du maximum ML.
+
+══════════════════════════════════════════════════════════════
