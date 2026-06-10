@@ -1,9 +1,3 @@
-"""
-gestion_donnees.py
-==================
-Classe pour la lecture, fusion et nettoyage des fichiers texte Ansys,
-et génération de données synthétiques.
-"""
 
 import os
 import re
