@@ -1,19 +1,46 @@
-# Configuration du Système Thermoélastique
+# ============================================================
+#  config.yaml — Configuration Centrale du Système Thermoélastique
+# ============================================================
 
+# --- Propriétés Géométriques de la Poutre ---
 geometrie:
-  longueur: 1.0
-  base: 0.1
-  hauteur: 0.1
+  longueur: 1.0        # [m] Longueur totale de la poutre
+  base:     0.1        # [m] Largeur de la section transversale  ← 10cm
+  hauteur:  0.1        # [m] Hauteur de la section transversale  ← 10cm
 
+# --- Propriétés Matérielles (Acier standard) ---
 materiau:
-  module_young: 200e9
-  coeff_thermique: 1.2e-5
+  module_young:        200000000000.0  # [Pa]  200 GPa
+  poisson:             0.3             # [-]   Coefficient de Poisson
+  coeff_thermique:     0.000012        # [1/°C] alpha = 12e-6
+  temperature_ref:     20.0            # [°C]  Température de référence
 
-parametres_ml:
-  n_estimators: 100
-  k_fold_splits: 5
-  random_state: 42
-  filtre_saint_venant: 0.09
+# --- Discrétisation EF 1D ---
+elements_finis:
+  nb_elements: 20
 
+# --- Hyperparamètres Machine Learning (Random Forest) ---
+machine_learning:
+  n_estimators:   200
+  max_depth:      20
+  random_state:   42
+  k_fold_splits:  5
+  test_size:      0.2
+
+# --- Principe de Saint-Venant ---
+saint_venant:
+  seuil_x:    0.09
+  seuil_bout: 0.91
+
+# --- Génération de Données Synthétiques (si pas de fichiers Ansys) ---
+donnees_synthetiques:
+  activer: true
+  nb_noeuds_par_cas: 500
+  plage_force:   [1000, 50000]
+  plage_temp:    [20, 200]
+  nb_cas:        30
+
+# --- Chemins des Fichiers ---
 chemins:
-  dossier_donnees: "./donnees"
+  dossier_donnees: "donnees"
+  rapport_txt:     "rapport_final.txt"

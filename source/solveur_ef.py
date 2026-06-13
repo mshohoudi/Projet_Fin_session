@@ -1,74 +1,163 @@
 import numpy as np
 
 
-class SolveurFEA1D:
-    def __init__(self, longueur, base, hauteur, module_young, coeff_thermique, nb_elements=20):
-        """
-        Initialisation du solveur Éléments Finis 1D pur (Euler-Bernoulli).
-        Les propriétés physiques sont injectées dynamiquement via le fichier YAML.
-        """
-        # Conversion explicite pour éviter les erreurs TypeError avec YAML
-        self.L = float(longueur)
-        self.b = float(base)
-        self.h = float(hauteur)
-        self.E = float(module_young)
-        self.alpha = float(coeff_thermique)
+class SolveurEF:
+    """
+    Résolution FEA 1D d'une poutre Euler-Bernoulli encastrée-libre.
 
-        # Paramètres de maillage (Maillage 1D)
-        self.ne = int(nb_elements)
-        self.nn = self.ne + 1
-        self.le = self.L / self.ne
+    DDL par noeud : [v_i, θ_i, v_{i+1}, θ_{i+1}]
+    """
 
-        self.I = (self.b * (self.h ** 3)) / 12.0
-        self.A = self.b * self.h
+    def __init__(self, cfg: dict):
+        geo = cfg["geometrie"]
+        mat = cfg["materiau"]
+        ef  = cfg["elements_finis"]
 
-    def calculer_resultats(self, force_kn, delta_temperature):
+        # Conversion explicite en float pour éviter les erreurs YAML
+        self.L   = float(geo["longueur"])
+        self.b   = float(geo["base"])
+        self.h   = float(geo["hauteur"])
+        self.E   = float(mat["module_young"])
+        self.nu  = float(mat["poisson"])
+        self.alpha = float(mat["coeff_thermique"])
+        self.T0    = float(mat["temperature_ref"])
+        self.nb_el = int(ef["nb_elements"])
+
+        self.I  = (self.b * self.h**3) / 12.0
+        self.A  = self.b * self.h
+        self.le = self.L / self.nb_el           # Longueur d'un élément
+        self.nb_noeuds = self.nb_el + 1
+        self.nb_ddl    = 2 * self.nb_noeuds     # v + θ par noeud
+
+    # ---------------------------------------------------------------- #
+    #  Matrice de rigidité élémentaire (4×4)
+    # ---------------------------------------------------------------- #
+
+    def _matrice_rigidite_elem(self) -> np.ndarray:
         """
-        Résout le système FEA sans facteurs de calibration artificiels
-        pour comparer équitablement avec le modèle ML.
+        Matrice de rigidité élémentaire pour un élément de longueur le.
+        DDL locaux : [v1, θ1, v2, θ2]
         """
-        force_n = float(force_kn) * 1000.0
-        ndof = 2 * self.nn
-        K_global = np.zeros((ndof, ndof))
-        F_global = np.zeros(ndof)
+        EI = self.E * self.I
+        l  = self.le
+        l2 = l**2
+        l3 = l**3
 
-        # Matrice de rigidité locale
-        coef = (self.E * self.I) / (self.le ** 3)
-        k_element = coef * np.array([
-            [12, 6 * self.le, -12, 6 * self.le],
-            [6 * self.le, 4 * (self.le ** 2), -6 * self.le, 2 * (self.le ** 2)],
-            [-12, -6 * self.le, 12, -6 * self.le],
-            [6 * self.le, 2 * (self.le ** 2), -6 * self.le, 4 * (self.le ** 2)]
+        ke = (EI / l3) * np.array([
+            [ 12,    6*l,  -12,   6*l  ],
+            [  6*l,  4*l2,  -6*l,  2*l2],
+            [-12,   -6*l,   12,  -6*l  ],
+            [  6*l,  2*l2,  -6*l,  4*l2],
         ])
+        return ke
 
-        # Assemblage de la matrice
-        for i in range(self.ne):
-            noeuds_dof = [2 * i, 2 * i + 1, 2 * i + 2, 2 * i + 3]
-            for r in range(4):
-                for c in range(4):
-                    K_global[noeuds_dof[r], noeuds_dof[c]] += k_element[r, c]
+    # ---------------------------------------------------------------- #
+    #  Assemblage de la matrice globale
+    # ---------------------------------------------------------------- #
 
-        # Application de la charge (Force Y sur le dernier nœud)
-        F_global[-2] = force_n
+    def _assembler(self) -> np.ndarray:
+        """Assemble la matrice de rigidité globale [nb_ddl × nb_ddl]."""
+        K = np.zeros((self.nb_ddl, self.nb_ddl))
+        ke = self._matrice_rigidite_elem()
 
-        # Conditions aux limites (Encastrement : on supprime les 2 premiers DDL)
-        K_reduit = K_global[2:, 2:]
-        F_reduit = F_global[2:]
+        for e in range(self.nb_el):
+            # DDL globaux associés à l'élément e : [2e, 2e+1, 2e+2, 2e+3]
+            dofs = [2*e, 2*e+1, 2*e+2, 2*e+3]
+            for i, gi in enumerate(dofs):
+                for j, gj in enumerate(dofs):
+                    K[gi, gj] += ke[i, j]
+        return K
+
+    # ---------------------------------------------------------------- #
+    #  Vecteur de forces nodales
+    # ---------------------------------------------------------------- #
+
+    def _vecteur_forces(self, F: float, T: float) -> np.ndarray:
+        """
+        Construit le vecteur de forces nodales global.
+          - Charge ponctuelle F appliquée au dernier nœud (extrémité libre)
+          - Forces thermiques équivalentes (variation axiale empêchée)
+        """
+        f = np.zeros(self.nb_ddl)
+        # Force concentrée en v du dernier nœud
+        f[-2] = -F   # Négatif car convention y positif vers le haut, charge vers le bas
+        return f
+
+    # ---------------------------------------------------------------- #
+    #  Application des conditions aux limites (encastrement en x=0)
+    # ---------------------------------------------------------------- #
+
+    def _appliquer_cl(self, K: np.ndarray, f: np.ndarray):
+        """
+        Encastrement parfait au nœud 0 : v_0 = 0, θ_0 = 0.
+        Méthode de pénalité (très grand nombre) pour rester symétrique.
+        """
+        K_mod = K.copy()
+        f_mod = f.copy()
+        penalite = 1.0e30
+
+        # DDL bloqués : 0 (v_0) et 1 (θ_0)
+        for dof in [0, 1]:
+            K_mod[dof, :] = 0.0
+            K_mod[:, dof] = 0.0
+            K_mod[dof, dof] = penalite
+            f_mod[dof] = 0.0
+
+        return K_mod, f_mod
+
+    # ---------------------------------------------------------------- #
+    #  Résolution et post-traitement
+    # ---------------------------------------------------------------- #
+
+    def resoudre(self, F: float, T: float) -> dict:
+        """
+        Résout K*U = f et extrait les résultats physiques.
+        """
+        K = self._assembler()
+        f = self._vecteur_forces(F, T)
+        K_mod, f_mod = self._appliquer_cl(K, f)
 
         # Résolution du système linéaire
-        U_reduit = np.linalg.solve(K_reduit, F_reduit)
+        try:
+            U = np.linalg.solve(K_mod, f_mod)
+        except np.linalg.LinAlgError:
+            U = np.linalg.lstsq(K_mod, f_mod, rcond=None)[0]
 
-        # Reconstitution du vecteur global
-        U_global = np.zeros(ndof)
-        U_global[2:] = U_reduit
+        # Extraire les déplacements nodaux
+        v_noeuds = U[0::2]   # v aux noeuds pairs
+        theta    = U[1::2]   # θ aux noeuds impairs
+        x_noeuds = np.linspace(0, self.L, self.nb_noeuds)
 
-        # 1. Déplacement théorique brut (Axe Y purement)
-        deplacement_brut = abs(float(U_global[-2]))
+        fleche_max = abs(v_noeuds[-1])   # En bout (nœud libre)
 
-        # 2. Contrainte calculée à X = 0.09 (Filtre de Saint-Venant)
-        reactions = K_global.dot(U_global)
-        moment_encastrement = abs(float(reactions[1]))
-        moment_x = moment_encastrement - (force_n * 0.09)
-        contrainte_fea_brute = (moment_x * (self.h / 2.0)) / self.I
+        # Contrainte de flexion maximale (section à l'encastrement)
+        dT = T - self.T0
+        M_encastrement = F * self.L
+        c = self.h / 2.0
+        sig_flex_max  = (M_encastrement * c) / self.I
+        sig_th        = self.E * self.alpha * dT
+        sig_x_max     = sig_flex_max + sig_th
+        von_mises_max = abs(sig_x_max)
 
-        return deplacement_brut, contrainte_fea_brute
+        # Profil de contrainte de flexion le long de la poutre
+        M_x = F * (self.L - x_noeuds)
+        sigma_flex_x = (M_x * c) / self.I  # fibre supérieure
+
+        return {
+            "U":                    U,
+            "fleche_max_m":         fleche_max,
+            "positions_x":          x_noeuds,
+            "fleche_noeuds":        v_noeuds,
+            "rotations":            theta,
+            "moment_flechissant":   M_x,
+            "contrainte_flex_x":    sigma_flex_x,
+            "contrainte_thermique_Pa": sig_th,
+            "contrainte_x_max_Pa":  sig_x_max,
+            "von_mises_max_Pa":     von_mises_max,
+        }
+
+    def __repr__(self):
+        return (
+            f"SolveurEF(L={self.L}m, nb_el={self.nb_el}, "
+            f"nb_ddl={self.nb_ddl})"
+        )

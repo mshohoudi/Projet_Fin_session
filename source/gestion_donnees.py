@@ -1,77 +1,210 @@
+
 import os
-import pandas as pd
+import re
 import numpy as np
+import pandas as pd
+
 
 class GestionnaireDonnees:
-    def __init__(self, dossier_donnees):
-        self.dossier_donnees = dossier_donnees
-        self.donnees_combinees = None
+    """
+    Classe responsable de la gestion des jeux de données (chargement Ansys ou synthétiques).
+    """
 
-    def charger_tous_les_fichiers(self):
-        toutes_les_donnees = []
-        fichiers = os.listdir(self.dossier_donnees)
+    def __init__(self, cfg: dict):
+        self.cfg = cfg
+        self.dossier_donnees = cfg["chemins"]["dossier_donnees"]
+        self.config_synthetique = cfg.get("donnees_synthetiques", {})
+        self.geo = cfg.get("geometrie", {})
+        self.mat = cfg.get("materiau", {})
 
-        # Filtrer uniquement les fichiers de contrainte Von-Mises (point de départ)
-        fichiers_contrainte = [f for f in fichiers if f.startswith('contrainte_F') and f.endswith('.txt')]
+    # ------------------------------------------------------------------ #
+    #  Extraction Force/Température depuis le nom de fichier
+    # ------------------------------------------------------------------ #
 
-        for fichier_c in fichiers_contrainte:
-            # Extraire la Force et la Température
-            nom_sans_extension = fichier_c.replace('.txt', '')
-            parties = nom_sans_extension.split('_')
+    def _extraire_parametres_nom_fichier(self, nom_fichier: str):
+        """
+        Extrait (force_kN, temp_C) depuis le nom de fichier.
+        """
+        pattern = r"_F([\d.]+)_T([\d.]+)"
+        match = re.search(pattern, nom_fichier, re.IGNORECASE)
+        if match:
+            f_kn = float(match.group(1))
+            t_c = float(match.group(2))
+            return f_kn * 1000.0, t_c  # Conversion kN → N
+        return None, None
 
-            force = float(parties[1].replace('F', ''))
-            temperature = float(parties[2].replace('T', ''))
+    # ------------------------------------------------------------------ #
+    #  Lecture d'un fichier Ansys
+    # ------------------------------------------------------------------ #
 
-            chemin_c = os.path.join(self.dossier_donnees, fichier_c)
+    def _lire_fichier_ansys(self, chemin: str, nom_valeur: str) -> pd.DataFrame:
+        """
+        Lit un fichier Ansys tab-séparé et le nettoie.
+        """
+        try:
+            df = pd.read_csv(chemin, sep="\t", header=0, engine="python")
+            df.columns = ["NodeID", "X", "Y", "Z", nom_valeur]
 
-            # Chercher le fichier de déplacement Y
-            fichier_d = fichier_c.replace('contrainte', 'deplacement_y')
-            chemin_d = os.path.join(self.dossier_donnees, fichier_d)
+            for col in df.columns:
+                df[col] = pd.to_numeric(df[col], errors="coerce")
 
-            # Chercher le fichier de contrainte X
-            fichier_cx = fichier_c.replace('contrainte', 'contrainte_x')
-            chemin_cx = os.path.join(self.dossier_donnees, fichier_cx)
+            df = df.dropna(subset=["NodeID", "X", "Z", nom_valeur])
+            df["NodeID"] = df["NodeID"].astype(int)
+            df["Y"] = df["Y"].round(6)
 
-            # Vérifier que les 3 fichiers existent pour cette configuration
-            if not os.path.exists(chemin_d) or not os.path.exists(chemin_cx):
-                print(f" [AVERTISSEMENT] Fichiers manquants pour {fichier_c}. On l'ignore.")
+            return df.reset_index(drop=True)
+
+        except Exception as e:
+            print(f"  [ERREUR] Lecture de {os.path.basename(chemin)} : {e}")
+            return pd.DataFrame()
+
+    # ------------------------------------------------------------------ #
+    #  Chargement et fusion de tous les fichiers
+    # ------------------------------------------------------------------ #
+
+    def _charger_donnees_ansys(self) -> pd.DataFrame:
+        """
+        Scanne le dossier et fusionne les fichiers par (F, T) et NodeID.
+        """
+        if not os.path.isdir(self.dossier_donnees):
+            print(f"  [INFO] Dossier introuvable : {self.dossier_donnees}")
+            return pd.DataFrame()
+
+        fichiers = [f for f in os.listdir(self.dossier_donnees) if f.endswith(".txt")]
+        if not fichiers:
+            print(f"  [INFO] Aucun fichier .txt dans : {self.dossier_donnees}")
+            return pd.DataFrame()
+
+        groupes = {}
+        for f in fichiers:
+            force_N, temp_C = self._extraire_parametres_nom_fichier(f)
+            if force_N is None:
+                continue
+            cle = (force_N, temp_C)
+            groupes.setdefault(cle, {})
+            chemin = os.path.join(self.dossier_donnees, f)
+            nom = f.lower()
+
+            if "deplacement_y" in nom:
+                groupes[cle]["deplacement_y"] = chemin
+            elif "contrainte_x" in nom:
+                groupes[cle]["contrainte_x"] = chemin
+            else:
+                groupes[cle]["von_mises"] = chemin
+
+        if not groupes:
+            print("  [INFO] Aucun fichier reconnu (vérifier le format de nommage).")
+            return pd.DataFrame()
+
+        print(f"\n  [DONNÉES] {len(groupes)} cas (F×T) détectés dans '{self.dossier_donnees}'")
+
+        frames = []
+        for (force_N, temp_C), fichiers_cas in sorted(groupes.items()):
+            f_kn = force_N / 1000
+
+            if "von_mises" not in fichiers_cas:
                 continue
 
-            try:
-                # skiprows=1 permet d'ignorer la ligne d'en-tête (X Location, etc.)
-                df_c = pd.read_csv(chemin_c, sep='\t', skiprows=1, names=['Noeud', 'X', 'Y', 'Z', 'Contrainte'])
-                df_d = pd.read_csv(chemin_d, sep='\t', skiprows=1, names=['Noeud', 'X', 'Y', 'Z', 'Deplacement'])
-                df_cx = pd.read_csv(chemin_cx, sep='\t', skiprows=1, names=['Noeud', 'X', 'Y', 'Z', 'Contrainte_X'])
-            except Exception as e:
-                print(f" [ERREUR] Format incorrect dans les fichiers associés à {fichier_c}: {e}")
+            df_vm = self._lire_fichier_ansys(fichiers_cas["von_mises"], "von_mises")
+            if df_vm.empty:
                 continue
 
-            # Fusionner les 3 fichiers selon le numéro de nœud
-            df_fusion = pd.merge(df_c, df_d[['Noeud', 'Deplacement']], on='Noeud')
-            df_fusion = pd.merge(df_fusion, df_cx[['Noeud', 'Contrainte_X']], on='Noeud')
+            df_merge = df_vm.copy()
 
-            # Ajouter les variables paramétriques (Features)
-            df_fusion['Force'] = force
-            df_fusion['Temperature'] = temperature
+            if "contrainte_x" in fichiers_cas:
+                df_sx = self._lire_fichier_ansys(fichiers_cas["contrainte_x"], "contrainte_x")
+                if not df_sx.empty:
+                    df_merge = df_merge.merge(df_sx[["NodeID", "contrainte_x"]], on="NodeID", how="left")
 
-            toutes_les_donnees.append(df_fusion)
+            if "deplacement_y" in fichiers_cas:
+                df_dy = self._lire_fichier_ansys(fichiers_cas["deplacement_y"], "deplacement_y")
+                if not df_dy.empty:
+                    df_merge = df_merge.merge(df_dy[["NodeID", "deplacement_y"]], on="NodeID", how="left")
 
-        if not toutes_les_donnees:
-            raise ValueError("Aucune donnée valide n'a pu être chargée. Vérifiez vos fichiers.")
+            df_merge["force"] = force_N
+            df_merge["temperature"] = temp_C
+            df_merge = df_merge.dropna(subset=["X", "Z", "von_mises"])
+            frames.append(df_merge)
 
-        self.donnees_combinees = pd.concat(toutes_les_donnees, ignore_index=True)
-        print(f" -> {len(toutes_les_donnees)} configurations (x3 fichiers) chargées avec succès.")
+            print(f"    ✓  F={f_kn:5.0f} kN  T={temp_C:6.1f}°C  →  {len(df_merge):4d} noeuds")
 
-        return self.donnees_combinees
+        if not frames:
+            return pd.DataFrame()
 
-    def preparer_donnees_ml(self):
-        if self.donnees_combinees is None:
-            self.charger_tous_les_fichiers()
+        resultat = pd.concat(frames, ignore_index=True)
+        print(f"\n  [TOTAL] {len(resultat):,} noeuds chargés ({len(frames)} cas fusionnés)\n")
+        return resultat
 
-        # NOUVEAU FORMAT D'ENTRÉE : 5 dimensions (X, Y, Z, Force, Température)
-        x_entrees = self.donnees_combinees[['X', 'Y', 'Z', 'Force', 'Temperature']].values
+    # ------------------------------------------------------------------ #
+    #  Génération de données synthétiques (fallback)
+    # ------------------------------------------------------------------ #
 
-        # SORTIES : 3 dimensions requises pour le projet (Contrainte VM, Contrainte X, Déplacement Y)
-        y_sorties = self.donnees_combinees[['Contrainte', 'Contrainte_X', 'Deplacement']].values
+    def _generer_donnees_synthetiques(self) -> pd.DataFrame:
+        """
+        Génère des données de simulation si aucun fichier Ansys n'est trouvé.
+        """
+        rng = np.random.default_rng(42)
+        L = self.geo["longueur"]
+        b = self.geo["base"]
+        h = self.geo["hauteur"]
+        E = self.mat["module_young"]
 
-        return x_entrees, y_sorties
+        I = (b * h ** 3) / 12.0
+
+        forces = rng.uniform(*self.config_synthetique["plage_force"], size=self.config_synthetique["nb_cas"])
+        temps = rng.uniform(*self.config_synthetique["plage_temp"], size=self.config_synthetique["nb_cas"])
+
+        frames = []
+        for F, T in zip(forces, temps):
+            n = self.config_synthetique["nb_noeuds_par_cas"]
+            X = rng.uniform(0.001, L, size=n)
+            Y = rng.uniform(-h / 2, h / 2, size=n)
+            Z = rng.uniform(0, b, size=n)
+
+            M_x = F * (L - X)
+            # Correction de la contrainte thermique appliquée ici
+            sigma_x = (M_x * Y) / I
+            tau = 1.5 * F / (b * h) * (1 - (2 * Y / h) ** 2)
+            von_mises = np.sqrt(sigma_x ** 2 + 3 * tau ** 2) * rng.normal(1.0, 0.01, n)
+            v = -(F * X ** 2 * (3 * L - X)) / (6 * E * I) * rng.normal(1.0, 0.005, n)
+
+            frames.append(pd.DataFrame({
+                "NodeID": range(1, n + 1),
+                "X": X, "Y": Y, "Z": Z,
+                "von_mises": np.abs(von_mises),
+                "contrainte_x": sigma_x,
+                "deplacement_y": v,
+                "force": F, "temperature": T,
+            }))
+
+            donnees = pd.concat(frames, ignore_index=True)
+
+        print(f"  [SYNTHÉTIQUE] {len(donnees):,} noeuds générés ({self.config_synthetique['nb_cas']} cas)\n")
+        return donnees
+
+    # ------------------------------------------------------------------ #
+    #  Point d'entrée principal
+    # ------------------------------------------------------------------ #
+
+    def charger_ou_generer_donnees(self) -> pd.DataFrame:
+        """
+        Méthode publique principale pour récupérer le DataFrame final.
+        """
+        df = self._charger_donnees_ansys()
+
+        if df.empty:
+            if self.config_synthetique.get("activer", False):
+                print("  [INFO] Bascule sur données synthétiques.")
+                df = self._generer_donnees_synthetiques()
+            else:
+                raise FileNotFoundError(
+                    f"Aucune donnée dans '{self.dossier_donnees}' et synthèse désactivée."
+                )
+
+        # Garantir toutes les colonnes requises
+        for col in ["von_mises", "contrainte_x", "deplacement_y"]:
+            if col not in df.columns:
+                df[col] = 0.0
+
+        df = df.dropna(subset=["X", "Y", "Z", "force", "temperature"])
+        return df.reset_index(drop=True)
