@@ -24,20 +24,19 @@ import pandas as pd
 # ── Modules internes ──────────────────────────────────────────────────
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "source"))
 
-# Correction de l'importation pour utiliser la nouvelle structure orientée objet
-from gestion_donnees import GestionnaireDonnees
+from gestion_donnees     import charger_ou_generer_donnees
 from modele_substitution import ModeleSubstitution
-from solveur_analytique import SolveurAnalytique
-from solveur_ef import SolveurEF
-from visualisation import afficher_toutes_les_figures
+from solveur_analytique  import SolveurAnalytique
+from solveur_ef          import SolveurEF
+from visualisation       import afficher_toutes_les_figures
+
 
 # ═══════════════════════════════════════════════════════════════════════
 #  Utilitaires d'affichage
 # ═══════════════════════════════════════════════════════════════════════
 
-LIGNE = "═" * 62
+LIGNE  = "═" * 62
 LIGNE2 = "─" * 62
-
 
 def banniere():
     print(f"\n{LIGNE}")
@@ -46,16 +45,13 @@ def banniere():
     print("  MOHAMMAD SHOHOUDIMOJDEHI, NICOLAS ALLARD")
     print(LIGNE)
 
-
 def section(titre: str):
     print(f"\n{LIGNE2}")
     print(f"  {titre}")
     print(LIGNE2)
 
-
 def ok(msg: str):
     print(f"  ✓  {msg}")
-
 
 def info(msg: str):
     print(f"  ►  {msg}")
@@ -96,10 +92,10 @@ def saisir_conditions(cfg: dict) -> tuple[float, float]:
     print("  ℹ  Vous pouvez saisir des valeurs hors plage (extrapolation ML).")
     print()
 
-    force_kN = saisir_float("Force appliquée [kN]", 1.0, 200.0, defaut=25.0)
-    temp_C = saisir_float("Température     [°C]", 0.0, 500.0, defaut=100.0)
+    force_kN = saisir_float("Force appliquée [kN]",  1.0, 200.0, defaut=25.0)
+    temp_C   = saisir_float("Température     [°C]",  0.0, 500.0, defaut=100.0)
 
-    force_N = force_kN * 1000.0
+    force_N  = force_kN * 1000.0
     return force_N, temp_C
 
 
@@ -110,6 +106,7 @@ def saisir_conditions(cfg: dict) -> tuple[float, float]:
 def generer_grille_prediction(cfg: dict) -> pd.DataFrame:
     """
     Crée une grille 3D de nœuds représentative de la poutre
+    (même résolution que les données Ansys : 41×5×5 = 1025 nœuds).
     """
     geo = cfg["geometrie"]
     L = geo["longueur"]
@@ -117,8 +114,8 @@ def generer_grille_prediction(cfg: dict) -> pd.DataFrame:
     h = geo["hauteur"]
 
     X_vals = np.arange(0.0, L + 0.001, 0.025)
-    Y_vals = np.array([-h / 2, -h / 4, 0.0, h / 4, h / 2])
-    Z_vals = np.array([0.0, b / 4, b / 2, 3 * b / 4, b])
+    Y_vals = np.array([-h/2, -h/4, 0.0, h/4, h/2])
+    Z_vals = np.array([0.0, b/4, b/2, 3*b/4, b])
 
     Xg, Yg, Zg = np.meshgrid(X_vals, Y_vals, Z_vals, indexing="ij")
     df = pd.DataFrame({
@@ -155,11 +152,11 @@ def afficher_rapport(res_ana: dict, res_ef: dict, res_ml: dict,
     lignes.append("  FLÈCHE MAXIMALE (en bout, x = L)")
     lignes.append("")
     lignes.append(f"  {'Méthode':<22} {'Valeur [mm]':>14}")
-    lignes.append(f"  {'-' * 22} {'-' * 14}")
+    lignes.append(f"  {'-'*22} {'-'*14}")
 
     v_ana = res_ana["fleche_max_m"] * 1e3
-    v_ef = res_ef["fleche_max_m"] * 1e3
-    v_ml = abs(res_ml.get("deplacement_y", 0) or 0) * 1e3
+    v_ef  = res_ef["fleche_max_m"]  * 1e3
+    v_ml  = abs(res_ml.get("deplacement_y", 0) or 0) * 1e3
 
     lignes.append(f"  {'Analytique':<22} {v_ana:>14.4f}")
     lignes.append(f"  {'FEA 1D (Euler-Bernoulli)':<22} {v_ef:>14.4f}")
@@ -167,8 +164,8 @@ def afficher_rapport(res_ana: dict, res_ef: dict, res_ml: dict,
 
     if v_ana > 0:
         lignes.append("")
-        lignes.append(f"  Écart FEA / Analytique  : {abs(v_ef - v_ana) / v_ana * 100:.2f} %")
-        lignes.append(f"  Écart ML  / Analytique  : {abs(v_ml - v_ana) / v_ana * 100:.2f} %")
+        lignes.append(f"  Écart FEA / Analytique  : {abs(v_ef-v_ana)/v_ana*100:.2f} %")
+        lignes.append(f"  Écart ML  / Analytique  : {abs(v_ml-v_ana)/v_ana*100:.2f} %")
 
     # ── Tableau contrainte Von Mises ────────────────────────────────
     lignes.append("")
@@ -176,11 +173,11 @@ def afficher_rapport(res_ana: dict, res_ef: dict, res_ml: dict,
     lignes.append("  CONTRAINTE VON MISES MAXIMALE")
     lignes.append("")
     lignes.append(f"  {'Méthode':<22} {'Valeur [MPa]':>14}")
-    lignes.append(f"  {'-' * 22} {'-' * 14}")
+    lignes.append(f"  {'-'*22} {'-'*14}")
 
     vm_ana = res_ana["von_mises_max_Pa"] / 1e6
-    vm_ef = res_ef["von_mises_max_Pa"] / 1e6
-    vm_ml = abs(res_ml.get("von_mises", 0) or 0) / 1e6
+    vm_ef  = res_ef["von_mises_max_Pa"]  / 1e6
+    vm_ml  = abs(res_ml.get("von_mises", 0) or 0) / 1e6
 
     lignes.append(f"  {'Analytique':<22} {vm_ana:>14.2f}")
     lignes.append(f"  {'FEA 1D (Euler-Bernoulli)':<22} {vm_ef:>14.2f}")
@@ -188,8 +185,8 @@ def afficher_rapport(res_ana: dict, res_ef: dict, res_ml: dict,
 
     if vm_ana > 0:
         lignes.append("")
-        lignes.append(f"  Écart FEA / Analytique  : {abs(vm_ef - vm_ana) / vm_ana * 100:.2f} %")
-        lignes.append(f"  Écart ML  / Analytique  : {abs(vm_ml - vm_ana) / vm_ana * 100:.2f} %")
+        lignes.append(f"  Écart FEA / Analytique  : {abs(vm_ef-vm_ana)/vm_ana*100:.2f} %")
+        lignes.append(f"  Écart ML  / Analytique  : {abs(vm_ml-vm_ana)/vm_ana*100:.2f} %")
 
     # ── Tableau contrainte X ────────────────────────────────────────
     lignes.append("")
@@ -197,11 +194,11 @@ def afficher_rapport(res_ana: dict, res_ef: dict, res_ml: dict,
     lignes.append("  CONTRAINTE NORMALE σ_x MAXIMALE")
     lignes.append("")
     lignes.append(f"  {'Méthode':<22} {'Valeur [MPa]':>14}")
-    lignes.append(f"  {'-' * 22} {'-' * 14}")
+    lignes.append(f"  {'-'*22} {'-'*14}")
 
     sx_ana = res_ana["contrainte_x_max_Pa"] / 1e6
-    sx_ef = res_ef["contrainte_x_max_Pa"] / 1e6
-    sx_ml = abs(res_ml.get("contrainte_x", 0) or 0) / 1e6
+    sx_ef  = res_ef["contrainte_x_max_Pa"]  / 1e6
+    sx_ml  = abs(res_ml.get("contrainte_x", 0) or 0) / 1e6
 
     lignes.append(f"  {'Analytique':<22} {sx_ana:>14.2f}")
     lignes.append(f"  {'FEA 1D (Euler-Bernoulli)':<22} {sx_ef:>14.2f}")
@@ -213,10 +210,10 @@ def afficher_rapport(res_ana: dict, res_ef: dict, res_ml: dict,
     lignes.append("  PRÉCISION DU MODÈLE ML (Validation K-Fold)")
     lignes.append("")
     lignes.append(f"  {'Cible':<28} {'R² moyen':>10}  {'± écart-type':>14}")
-    lignes.append(f"  {'-' * 28} {'-' * 10}  {'-' * 14}")
+    lignes.append(f"  {'-'*28} {'-'*10}  {'-'*14}")
 
     labels = {
-        "von_mises": "Von Mises",
+        "von_mises":    "Von Mises",
         "contrainte_x": "Contrainte X",
         "deplacement_y": "Déplacement Y",
     }
@@ -249,7 +246,7 @@ def sauvegarder_rapport(rapport: str, cfg: dict,
     nom = cfg["chemins"]["rapport_txt"]
     # Ajouter le timestamp dans le nom si le fichier existe déjà
     if os.path.exists(nom):
-        ts = time.strftime("%Y%m%d_%H%M%S")
+        ts  = time.strftime("%Y%m%d_%H%M%S")
         base, ext = os.path.splitext(nom)
         nom = f"{base}_{ts}{ext}"
 
@@ -273,19 +270,16 @@ def main():
     ok("config.yaml chargé")
 
     geo = cfg["geometrie"]
-    info(f"Poutre : L={geo['longueur']}m  b={geo['base'] * 100:.0f}cm  "
-         f"h={geo['hauteur'] * 100:.0f}cm")
-    info(f"Matériau : E={cfg['materiau']['module_young'] / 1e9:.0f} GPa  "
-         f"α={cfg['materiau']['coeff_thermique'] * 1e6:.1f}×10⁻⁶ /°C")
+    info(f"Poutre : L={geo['longueur']}m  b={geo['base']*100:.0f}cm  "
+         f"h={geo['hauteur']*100:.0f}cm")
+    info(f"Matériau : E={cfg['materiau']['module_young']/1e9:.0f} GPa  "
+         f"α={cfg['materiau']['coeff_thermique']*1e6:.1f}×10⁻⁶ /°C")
 
     # ── 2. Données ───────────────────────────────────────────────────
     section("INGESTION DES DONNÉES ANSYS")
-    # Correction de l'instanciation de la classe
-    gestionnaire = GestionnaireDonnees(cfg)
-    df_donnees = gestionnaire.charger_ou_generer_donnees()
-
+    df_donnees = charger_ou_generer_donnees(cfg)
     ok(f"{len(df_donnees):,} nœuds  |  "
-       f"{df_donnees[['force', 'temperature']].drop_duplicates().shape[0]} cas (F×T)")
+       f"{df_donnees[['force','temperature']].drop_duplicates().shape[0]} cas (F×T)")
 
     # ── 3. ML : Validation + Entraînement ───────────────────────────
     section("MODÈLE DE SUBSTITUTION — RANDOM FOREST")
@@ -302,17 +296,17 @@ def main():
         section("SOLVEUR ANALYTIQUE (Euler-Bernoulli)")
         solveur_ana = SolveurAnalytique(cfg)
         res_ana = solveur_ana.resoudre(force_N, temp_C)
-        res_ana["_EI"] = solveur_ana.E * solveur_ana.I  # pour la visu
-        ok(f"Flèche max         : {res_ana['fleche_max_m'] * 1e3:.4f} mm")
-        ok(f"Von Mises max      : {res_ana['von_mises_max_Pa'] / 1e6:.2f} MPa")
-        ok(f"Contrainte therm.  : {res_ana['contrainte_thermique_Pa'] / 1e6:.2f} MPa")
+        res_ana["_EI"] = solveur_ana.E * solveur_ana.I   # pour la visu
+        ok(f"Flèche max         : {res_ana['fleche_max_m']*1e3:.4f} mm")
+        ok(f"Von Mises max      : {res_ana['von_mises_max_Pa']/1e6:.2f} MPa")
+        ok(f"Contrainte therm.  : {res_ana['contrainte_thermique_Pa']/1e6:.2f} MPa")
 
         # ── 5b. Solveur FEA 1D ───────────────────────────────────────
         section("SOLVEUR FEA 1D (Éléments Finis Euler-Bernoulli)")
         solveur_ef = SolveurEF(cfg)
         res_ef = solveur_ef.resoudre(force_N, temp_C)
-        ok(f"Flèche max         : {res_ef['fleche_max_m'] * 1e3:.4f} mm")
-        ok(f"Von Mises max      : {res_ef['von_mises_max_Pa'] / 1e6:.2f} MPa")
+        ok(f"Flèche max         : {res_ef['fleche_max_m']*1e3:.4f} mm")
+        ok(f"Von Mises max      : {res_ef['von_mises_max_Pa']/1e6:.2f} MPa")
         ok(f"Nb éléments        : {solveur_ef.nb_el}  |  Nb DDL : {solveur_ef.nb_ddl}")
 
         # ── 5c. Prédiction ML ────────────────────────────────────────
@@ -320,8 +314,8 @@ def main():
         grille = generer_grille_prediction(cfg)
         df_pred = modele.predire(grille, force_N, temp_C)
         res_ml = modele.extraire_valeurs_max(df_pred)
-        ok(f"Flèche max (ML)    : {abs(res_ml.get('deplacement_y', 0)) * 1e3:.4f} mm")
-        ok(f"Von Mises max (ML) : {res_ml.get('von_mises', 0) / 1e6:.2f} MPa")
+        ok(f"Flèche max (ML)    : {abs(res_ml.get('deplacement_y',0))*1e3:.4f} mm")
+        ok(f"Von Mises max (ML) : {res_ml.get('von_mises',0)/1e6:.2f} MPa")
         ok(f"Saint-Venant       : x ∈ [{cfg['saint_venant']['seuil_x']:.2f} m, "
            f"{cfg['saint_venant']['seuil_bout']:.2f} m]")
 
