@@ -11,9 +11,10 @@ L'objectif principal est d'utiliser un modèle d'apprentissage automatique (entr
 
 - Calcul analytique des déplacements
 - Calcul analytique des contraintes
+- Calcul avec ML Random Forest
 - Visualisation interactive des résultats
 - Export des données
-- *À compléter*
+- Validation des calculs avec ML Kfold
 
 ## 📂 Structure du Projet
 Le code est organisé de manière modulaire (Programmation Orientée Objet) :
@@ -22,7 +23,7 @@ Le code est organisé de manière modulaire (Programmation Orientée Objet) :
 projet_thermoelastique/
 │
 ├── donnees/                    # Dossier contenant les données d'entraînement (ignoré par Git)
-├── source/                        # Code source du projet
+├── solveurs/                        # Code source du projet
 │   ├── __init__.py
 │   ├── gestion_donnees.py      # Importation et nettoyage des données ANSYS
 │   ├── solveur_ef.py           # Solveur éléments finis 
@@ -33,7 +34,6 @@ projet_thermoelastique/
 │   ├── __init__.py
 │   ├── conftest.py      # Fichier de configuration pour pytest
 │   ├── test_ml.py           # Test du modèle de substitution
-│   ├── test_solveurs.py   # Test des solveurs analytiques et éléments finis
 │   └── test_systeme.py       # Test des solveurs analytique et solveur éléments finis, validation de la cohérence des résultas
 ├── app.py                     # Interface utilisateur développée avec Streamlit
 ├── config.yaml                     # Paramètres de configuration du système thermoélastique
@@ -48,6 +48,11 @@ Installer les dépendances :
 ```text
 pip install -r requirements.txt
 ```
+## Lancement du programme
+```text
+streamlit run app.py
+```
+
 ## Méthodes utilisées
 
 ### Solveur analytique
@@ -65,7 +70,7 @@ Le solveur analytique utilise les équations classiques de la résistance des ma
 
 ### Modèle de substitution
 
-Le modèle de substitution est basé sur l'algorithme Random Forest de Scikit-Learn.
+Le modèle de substitution est basé sur l'algorithme Random Forest et une étape de validation utilise le modèle Kfold.
 
 ## Tests
 Éxécuter les tests :
