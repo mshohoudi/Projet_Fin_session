@@ -22,7 +22,7 @@ def extraire_parametres_nom_fichier(nom_fichier: str):
     :param nom_fichier: Nom du fichier à analyser.
     :type nom_fichier: str
 
-    :return: Résultat produit par la fonction.
+    :return: la force et la température contenus dans le fichier.
     :rtype: object
     """
     pattern = r"_F([\d.]+)_T([\d.]+)"
@@ -47,7 +47,7 @@ def lire_fichier_ansys(chemin: str, nom_valeur: str) -> pd.DataFrame:
     :param nom_valeur: Nom de la colonne de valeurs à créer.
     :type nom_valeur: str
 
-    :return: Résultat produit par la fonction.
+    :return: Fichier converti en DataFrame.
     :rtype: pd.DataFrame
     """
     try:
@@ -84,7 +84,7 @@ def charger_donnees_ansys(dossier: str) -> pd.DataFrame:
     :param dossier: Chemin du dossier à lire.
     :type dossier: str
 
-    :return: Résultat produit par la fonction.
+    :return: Tous les fichiers d'entrée sous la forme d'un DataFrame
     :rtype: pd.DataFrame
     """
     if not os.path.isdir(dossier):
@@ -114,7 +114,7 @@ def charger_donnees_ansys(dossier: str) -> pd.DataFrame:
             groupes[cle]["von_mises"] = chemin
 
     if not groupes:
-        print("  [INFO] Aucun fichier reconnu (vérifier le format de nommage).")
+        print("  [INFO] Aucun fichier reconnu (vérifier le format du nom du fichier).")
         return pd.DataFrame()
 
     print(f"\n  [DONNÉES] {len(groupes)} cas (F×T) détectés dans '{dossier}'")
@@ -175,7 +175,7 @@ def generer_donnees_synthetiques(cfg: dict) -> pd.DataFrame:
     :param cfg: Dictionnaire de configuration du projet.
     :type cfg: dict
 
-    :return: Résultat produit par la fonction.
+    :return: Jeu de données synthétiques.
     :rtype: pd.DataFrame
     """
 
@@ -232,7 +232,7 @@ def charger_ou_generer_donnees(cfg: dict) -> pd.DataFrame:
     :param cfg: Dictionnaire de configuration du projet.
     :type cfg: dict
 
-    :return: Résultat produit par la fonction.
+    :return: Les données ANSYS ou celes synthétiques selon le cas.
     :rtype: pd.DataFrame
 
     :raises FileNotFoundError: Si aucune donnée n’est trouvée et si la génération synthétique est désactivée.
