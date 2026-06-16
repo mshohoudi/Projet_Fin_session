@@ -4,8 +4,12 @@
 # 2. Environnements virtuels Python
 venv/
 env/
+.venv/
 
 # 3. Fichiers temporaires et cache Python
 __pycache__/
 *.pyc
+
+# 4. Sphinx
+build/
 

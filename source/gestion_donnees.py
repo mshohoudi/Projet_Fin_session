@@ -17,9 +17,13 @@ import pandas as pd
 
 def extraire_parametres_nom_fichier(nom_fichier: str):
     """
-    Extrait (force_kN, temp_C) depuis le nom de fichier.
-    Format : contrainte_F<val>_T<val>.txt  (F en kN)
-    Retourne (None, None) si non reconnu.
+    Extrait la force et la température contenues dans un nom de fichier ANSYS.
+
+    :param nom_fichier: Nom du fichier à analyser.
+    :type nom_fichier: str
+
+    :return: Résultat produit par la fonction.
+    :rtype: object
     """
     pattern = r"_F([\d.]+)_T([\d.]+)"
     match = re.search(pattern, nom_fichier, re.IGNORECASE)
@@ -36,10 +40,15 @@ def extraire_parametres_nom_fichier(nom_fichier: str):
 
 def lire_fichier_ansys(chemin: str, nom_valeur: str) -> pd.DataFrame:
     """
-    Lit un fichier Ansys tab-séparé.
-    Colonnes attendues : Node Number | X | Y | Z | Valeur
+    Lit un fichier de résultats ANSYS et le convertit en DataFrame.
 
-    Retourne DataFrame avec colonnes : NodeID, X, Y, Z, <nom_valeur>
+    :param chemin: Chemin du fichier à lire.
+    :type chemin: str
+    :param nom_valeur: Nom de la colonne de valeurs à créer.
+    :type nom_valeur: str
+
+    :return: Résultat produit par la fonction.
+    :rtype: pd.DataFrame
     """
     try:
         df = pd.read_csv(chemin, sep="\t", header=0, engine="python")
@@ -70,8 +79,13 @@ def lire_fichier_ansys(chemin: str, nom_valeur: str) -> pd.DataFrame:
 
 def charger_donnees_ansys(dossier: str) -> pd.DataFrame:
     """
-    Scanne le dossier, groupe les fichiers par (F, T),
-    fusionne les 3 types par NodeID.
+    Charge et fusionne les fichiers de résultats ANSYS d’un dossier.
+
+    :param dossier: Chemin du dossier à lire.
+    :type dossier: str
+
+    :return: Résultat produit par la fonction.
+    :rtype: pd.DataFrame
     """
     if not os.path.isdir(dossier):
         print(f"  [INFO] Dossier introuvable : {dossier}")
@@ -155,6 +169,16 @@ def charger_donnees_ansys(dossier: str) -> pd.DataFrame:
 # ------------------------------------------------------------------ #
 
 def generer_donnees_synthetiques(cfg: dict) -> pd.DataFrame:
+    """
+    Génère un jeu de données synthétiques lorsque les données ANSYS sont absentes.
+
+    :param cfg: Dictionnaire de configuration du projet.
+    :type cfg: dict
+
+    :return: Résultat produit par la fonction.
+    :rtype: pd.DataFrame
+    """
+
     geo   = cfg["geometrie"]
     mat   = cfg["materiau"]
     synt  = cfg["donnees_synthetiques"]
@@ -202,6 +226,17 @@ def generer_donnees_synthetiques(cfg: dict) -> pd.DataFrame:
 # ------------------------------------------------------------------ #
 
 def charger_ou_generer_donnees(cfg: dict) -> pd.DataFrame:
+    """
+    Charge les données ANSYS ou génère des données synthétiques de secours.
+
+    :param cfg: Dictionnaire de configuration du projet.
+    :type cfg: dict
+
+    :return: Résultat produit par la fonction.
+    :rtype: pd.DataFrame
+
+    :raises FileNotFoundError: Si aucune donnée n’est trouvée et si la génération synthétique est désactivée.
+    """
     dossier = cfg["chemins"]["dossier_donnees"]
     df = charger_donnees_ansys(dossier)
 
