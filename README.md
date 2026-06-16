@@ -41,11 +41,13 @@ projet_thermoelastique/
 ├── requirements.txt            # Dépendances du projet
 └── README.md                   # Documentation du projet
 
+```
+
 ## Installation
 Installer les dépendances :
-
+```text
 pip install -r requirements.txt
-
+```
 ## Méthodes utilisées
 
 ### Solveur analytique
@@ -67,11 +69,13 @@ Le modèle de substitution est basé sur l'algorithme Random Forest de Scikit-Le
 
 ## Tests
 Éxécuter les tests :
+```text
 python -m pytest -v
+```
 
-## Auteur
+## Auteurs
 
-Mohammad Shohoudimojdehi et Nicolas Allard
-MGA 802 : Projet de fin de session
-École de technologie supérieure (ÉTS)
+Mohammad Shohoudimojdehi et Nicolas Allard  
+MGA 802 : Projet de fin de session  
+École de technologie supérieure (ÉTS)  
 
