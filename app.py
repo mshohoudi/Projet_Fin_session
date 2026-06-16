@@ -130,13 +130,13 @@ def sidebar(cfg):
     st.sidebar.markdown("### 🎛️ Conditions de chargement")
     force_kN = st.sidebar.slider(
         "Force appliquée F [kN]",
-        min_value=1.0, max_value=80.0,
-        value=20.0, step=0.5,
+        min_value=10.0, max_value=40.0,
+        value=25.0, step=0.5,
         help="Force ponctuelle appliquée à l'extrémité libre"
     )
     temp_C = st.sidebar.slider(
         "Température T [°C]",
-        min_value=0.0, max_value=300.0,
+        min_value=20.0, max_value=200.0,
         value=100.0, step=5.0,
         help="Température uniforme de la poutre"
     )
@@ -177,14 +177,14 @@ def fig_comparaison_barres(res_ana, res_ef, res_ml, F, T):
 
     fig = make_subplots(
         rows=1, cols=2,
-        subplot_titles=("Flèche Maximale [mm]", "Von Mises Max [MPa]"),
+        subplot_titles=("Flèche Maximale [mm] (Déplacement Y)", "Von Mises Max [MPa]"),
         horizontal_spacing=0.12,
     )
 
     for i, (m, c) in enumerate(zip(methodes, couleurs)):
         fig.add_trace(go.Bar(
             name=m, x=[m], y=[v_vals[i]],
-            marker_color=c, showlegend=(i == 0),
+            marker_color=c, showlegend=False,
             text=f"{v_vals[i]:.4f}", textposition="outside",
         ), row=1, col=1)
 
@@ -199,7 +199,6 @@ def fig_comparaison_barres(res_ana, res_ef, res_ml, F, T):
         paper_bgcolor="#ffffff", plot_bgcolor="#f8f9fa",
         font=dict(color="#212529"),
         barmode="group", height=380,
-        legend=dict(orientation="h", y=-0.15),
         margin=dict(t=60, b=60),
     )
     fig.update_xaxes(showgrid=False, color="#212529")
@@ -237,9 +236,9 @@ def fig_profil_fleche(res_ef, res_ana, res_ml, F, T, L):
     ))
 
     fig.update_layout(
-        title="<b>Profil de Flèche v(x)</b>",
+        title="<b>Profil de Flèche v(x) (Déplacement Y)</b>",
         xaxis_title="Position x [m]",
-        yaxis_title="Flèche |v(x)| [mm]",
+        yaxis_title="Flèche |v(x)| (Déplacement Y) [mm]",
         paper_bgcolor="#ffffff", plot_bgcolor="#f8f9fa",
         font=dict(color="#212529"), height=350,
         legend=dict(orientation="h", y=-0.2),
@@ -417,7 +416,7 @@ def afficher_metriques(res_ana, res_ef, res_ml):
     st.markdown("### 📊 Résultats")
 
     # ── Flèche ──
-    st.markdown("**Flèche Maximale**")
+    st.markdown("**Flèche Maximale (Déplacement Y)**")
     c1, c2, c3 = st.columns(3)
     c1.metric("🔵 Analytique",  f"{v_ana:.4f} mm")
     c2.metric("🟢 FEA 1D",      f"{v_ef:.4f} mm",
@@ -509,7 +508,7 @@ def main():
 
     # ── Heatmaps 3D ─────────────────────────────────────────────
     st.markdown("### 🌡️ Cartographies 3D (Prédictions ML)")
-    tab1, tab2, tab3 = st.tabs(["Von Mises", "Contrainte X", "Déplacement Y"])
+    tab1, tab2, tab3 = st.tabs(["Von Mises", "Contrainte X", "Flèche (Déplacement Y)"])
 
     with tab1:
         fig = fig_heatmap_3d(df_pred, "von_mises", force_N, temp_C,
