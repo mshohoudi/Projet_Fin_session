@@ -105,7 +105,7 @@ def generer_grille(cfg) -> pd.DataFrame:
 
 def sidebar(cfg):
     st.sidebar.image("https://upload.wikimedia.org/wikipedia/commons/2/2a/Ets_quebec_logo.png",
-                     use_column_width=True, output_format="auto")
+                     width=True, output_format="auto")
 
     st.sidebar.markdown("## 🔩  Surrogate ML — poutre thermoélastique")
     st.sidebar.markdown("**Projet Fin de Session MGA 802**")
