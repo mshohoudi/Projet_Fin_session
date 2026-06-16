@@ -130,15 +130,15 @@ def sidebar(cfg):
     st.sidebar.markdown("### 🎛️ Conditions de chargement")
     force_kN = st.sidebar.slider(
         "Force appliquée F [kN]",
-        min_value=10.0, max_value=40.0,
+        min_value=5.0, max_value=50.0,
         value=25.0, step=0.5,
-        help="Force ponctuelle appliquée à l'extrémité libre"
+        help="Force ponctuelle appliquée à l'extrémité libre. Le domaine d'entrainement utilisé était de 10 à 40 kN, il est recommandé de rester dans ce domaine."
     )
     temp_C = st.sidebar.slider(
         "Température T [°C]",
-        min_value=20.0, max_value=200.0,
+        min_value=0.0, max_value=250.0,
         value=100.0, step=5.0,
-        help="Température uniforme de la poutre"
+        help="Température uniforme de la poutre. Le domaine d'entrainement utilisé était de 20 à 200 °C, il est recommandé de rester dans ce domaine."
     )
 
     st.sidebar.divider()
