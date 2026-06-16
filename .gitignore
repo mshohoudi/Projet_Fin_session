@@ -10,3 +10,6 @@ env/
 __pycache__/
 *.pyc
 
+# 4. Sphinx
+build/
+
