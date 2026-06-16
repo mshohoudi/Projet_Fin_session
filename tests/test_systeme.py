@@ -20,7 +20,7 @@ import numpy as np
 # ── Chemins : fonctionne que le fichier soit dans tests/ ou à la racine ──
 _HERE    = os.path.dirname(os.path.abspath(__file__))
 _ROOT    = os.path.abspath(os.path.join(_HERE, ".."))   # racine du projet
-_SOURCE  = os.path.join(_ROOT, "source")
+_SOURCE  = os.path.join(_ROOT, "solveurs")
 
 for p in [_SOURCE, _ROOT]:
     if p not in sys.path:

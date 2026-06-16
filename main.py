@@ -22,7 +22,7 @@ import numpy as np
 import pandas as pd
 
 # ── Modules internes ──────────────────────────────────────────────────
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "source"))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "solveurs"))
 
 from gestion_donnees     import charger_ou_generer_donnees
 from modele_substitution import ModeleSubstitution

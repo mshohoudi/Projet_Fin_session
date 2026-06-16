@@ -20,7 +20,7 @@ import yaml
 
 # ── Chemins ──────────────────────────────────────────────────────────
 _ROOT   = os.path.dirname(os.path.abspath(__file__))
-_SOURCE = os.path.join(_ROOT, "source")
+_SOURCE = os.path.join(_ROOT, "solveurs")
 sys.path.insert(0, _SOURCE)
 sys.path.insert(0, _ROOT)
 

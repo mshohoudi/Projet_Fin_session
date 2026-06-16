@@ -16,7 +16,7 @@ import pandas as pd
 # ── Chemins ──────────────────────────────────────────────────────────
 _HERE   = os.path.dirname(os.path.abspath(__file__))
 _ROOT   = os.path.abspath(os.path.join(_HERE, ".."))
-_SOURCE = os.path.join(_ROOT, "source")
+_SOURCE = os.path.join(_ROOT, "solveurs")
 
 for p in [_SOURCE, _ROOT]:
     if p not in sys.path:
