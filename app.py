@@ -19,7 +19,7 @@ import yaml
 
 # ── Chemins ──────────────────────────────────────────────────────────
 _ROOT = os.path.dirname(os.path.abspath(__file__))
-# Assurez-vous que le dossier contenant les solveurs s'appelle bien "solveurs"
+# Dossier contenant les modules de calcul
 _SOURCE = os.path.join(_ROOT, "solveurs")
 sys.path.insert(0, _SOURCE)
 sys.path.insert(0, _ROOT)
@@ -30,7 +30,7 @@ from solveur_analytique import SolveurAnalytique
 from solveur_ef import SolveurEF
 
 # ════════════════════════════════════════════════════════════════
-#  Config page
+#  Configuration de la page et CSS
 # ════════════════════════════════════════════════════════════════
 
 st.set_page_config(
@@ -40,7 +40,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# CSS personnalisé (Thème Clair / Light Mode)
+# CSS personnalisé pour harmoniser l'affichage des métriques (Thème Clair)
 st.markdown("""
 <style>
     .metric-card {
@@ -65,22 +65,25 @@ st.markdown("""
 
 
 # ════════════════════════════════════════════════════════════════
-#  Cache : chargement config + données + modèle
+#  Mise en cache : Chargement config, données et entraînement
 # ════════════════════════════════════════════════════════════════
 
-@st.cache_resource(show_spinner="Chargement de la configuration...")
+@st.cache_resource(show_spinner=False)
 def charger_config():
+    """Charge le fichier de configuration YAML."""
     with open(os.path.join(_ROOT, "config.yaml"), encoding="utf-8") as f:
         return yaml.safe_load(f)
 
 
-@st.cache_resource(show_spinner="Ingestion des données Ansys...")
+@st.cache_resource(show_spinner=False)
 def charger_donnees(cfg):
+    """Charge les données Ansys (ou génère le fallback synthétique)."""
     return charger_ou_generer_donnees(cfg)
 
 
-@st.cache_resource(show_spinner="Entraînement du modèle Random Forest...")
+@st.cache_resource(show_spinner=False)
 def entrainer_modele(_df, cfg):
+    """Initialise, valide et entraîne le modèle Random Forest."""
     modele = ModeleSubstitution(cfg)
     modele.valider(_df)
     modele.entrainer(_df)
@@ -88,6 +91,7 @@ def entrainer_modele(_df, cfg):
 
 
 def generer_grille(cfg) -> pd.DataFrame:
+    """Génère la grille 3D des noeuds pour les prédictions ML."""
     L = cfg["geometrie"]["longueur"]
     h = cfg["geometrie"]["hauteur"]
     b = cfg["geometrie"]["base"]
@@ -99,12 +103,13 @@ def generer_grille(cfg) -> pd.DataFrame:
 
 
 # ════════════════════════════════════════════════════════════════
-#  Sidebar
+#  Barre latérale (Sidebar)
 # ════════════════════════════════════════════════════════════════
 
 def sidebar(cfg):
+    """Gère l'affichage et les entrées utilisateur dans la barre latérale."""
     st.sidebar.image("https://upload.wikimedia.org/wikipedia/commons/2/2a/Ets_quebec_logo.png",
-                     use_container_width=True)
+                     use_container_width=True, output_format="auto")
 
     st.sidebar.markdown("## 🔩 Surrogate ML — Poutre")
     st.sidebar.markdown("**Projet Fin de Session MGA 802**")
@@ -125,10 +130,10 @@ def sidebar(cfg):
     c4.metric("α", f"{mat['coeff_thermique'] * 1e6:.1f}×10⁻⁶")
     st.sidebar.divider()
 
-    # ── Saisie des conditions ──
+    # ── Saisie des conditions de chargement ──
     st.sidebar.markdown("### 🎛️ Conditions aux limites")
 
-    # Curseur pour la force (Élargi pour tester l'extrapolation : 0 à 100 kN)
+    # Curseurs étendus pour permettre la démonstration de l'extrapolation
     force_kN = st.sidebar.slider(
         "Force appliquée F [kN] (Entraînement: 10-40)",
         min_value=0.0, max_value=100.0,
@@ -136,7 +141,6 @@ def sidebar(cfg):
         help="Force ponctuelle à l'extrémité libre (X=L)"
     )
 
-    # Curseur pour la température (Élargi pour tester l'extrapolation : -20 à 400 °C)
     temp_C = st.sidebar.slider(
         "Température T [°C] (Entraînement: 20-200)",
         min_value=-20.0, max_value=400.0,
@@ -145,6 +149,8 @@ def sidebar(cfg):
     )
 
     st.sidebar.divider()
+
+    # ── Configuration du modèle ML ──
     st.sidebar.markdown("### 🤖 Configuration ML")
     sv = cfg["saint_venant"]
     st.sidebar.caption(f"Validité x : [{sv['seuil_x']}, {sv['seuil_bout']}] m")
@@ -161,7 +167,7 @@ def sidebar(cfg):
 # ════════════════════════════════════════════════════════════════
 
 def fig_comparaison_barres(res_ana, res_ef, res_ml, F, T):
-    """Barres comparatives : flèche max et Von Mises max."""
+    """Génère les barres comparatives : flèche max et Von Mises max."""
     methodes = ["Analytique", "FEA 1D", "ML 3D"]
     couleurs = ["#007bff", "#28a745", "#fd7e14"]
 
@@ -170,6 +176,7 @@ def fig_comparaison_barres(res_ana, res_ef, res_ml, F, T):
         res_ef["fleche_max_m"] * 1e3,
         abs(res_ml.get("deplacement_y", 0)) * 1e3,
     ]
+    # Conversion rigoureuse en MPa pour tous les solveurs
     vm_vals = [
         res_ana["von_mises_max_Pa"] / 1e6,
         res_ef["von_mises_max_Pa"] / 1e6,
@@ -184,23 +191,19 @@ def fig_comparaison_barres(res_ana, res_ef, res_ml, F, T):
 
     for i, (m, c) in enumerate(zip(methodes, couleurs)):
         fig.add_trace(go.Bar(
-            name=m, x=[m], y=[v_vals[i]],
-            marker_color=c, showlegend=False,
+            name=m, x=[m], y=[v_vals[i]], marker_color=c, showlegend=False,
             text=f"{v_vals[i]:.4f}", textposition="outside",
         ), row=1, col=1)
 
         fig.add_trace(go.Bar(
-            name=m, x=[m], y=[vm_vals[i]],
-            marker_color=c, showlegend=False,
+            name=m, x=[m], y=[vm_vals[i]], marker_color=c, showlegend=False,
             text=f"{vm_vals[i]:.2f}", textposition="outside",
         ), row=1, col=2)
 
     fig.update_layout(
         title=f"<b>Comparaison des résultats</b> — F={F / 1e3:.1f} kN | T={T:.0f}°C",
-        paper_bgcolor="#ffffff", plot_bgcolor="#f8f9fa",
-        font=dict(color="#212529"),
-        barmode="group", height=380,
-        margin=dict(t=60, b=60),
+        paper_bgcolor="#ffffff", plot_bgcolor="#f8f9fa", font=dict(color="#212529"),
+        barmode="group", height=380, margin=dict(t=60, b=60),
     )
     fig.update_xaxes(showgrid=False)
     fig.update_yaxes(gridcolor="#e9ecef")
@@ -208,7 +211,7 @@ def fig_comparaison_barres(res_ana, res_ef, res_ml, F, T):
 
 
 def fig_profil_fleche(res_ef, res_ana, res_ml, F, T, L):
-    """Profil de flèche v(x) le long de la poutre."""
+    """Trace le profil de la flèche v(x) le long de la poutre."""
     x = np.linspace(0, L, 200)
     E = res_ana.get("_E");
     I = res_ana.get("_I")
@@ -217,34 +220,24 @@ def fig_profil_fleche(res_ef, res_ana, res_ml, F, T, L):
 
     if E and I:
         v_ana = (F * x ** 2 * (3 * L - x)) / (6 * E * I)
-        fig.add_trace(go.Scatter(
-            x=x, y=v_ana * 1e3, name="Analytique",
-            line=dict(color="#007bff", width=2.5),
-        ))
+        fig.add_trace(go.Scatter(x=x, y=v_ana * 1e3, name="Analytique", line=dict(color="#007bff", width=2.5)))
 
     x_ef = res_ef.get("positions_x", [])
     v_ef = np.abs(res_ef.get("fleche_noeuds", []))
     if len(x_ef):
-        fig.add_trace(go.Scatter(
-            x=x_ef, y=v_ef * 1e3, name="FEA 1D",
-            line=dict(color="#28a745", width=2, dash="dash"),
-        ))
+        fig.add_trace(go.Scatter(x=x_ef, y=v_ef * 1e3, name="FEA 1D", line=dict(color="#28a745", width=2, dash="dash")))
 
     v_ml = abs(res_ml.get("deplacement_y", 0))
     fig.add_trace(go.Scatter(
-        x=[L], y=[v_ml * 1e3], name=f"ML 3D (bout)",
-        mode="markers",
+        x=[L], y=[v_ml * 1e3], name=f"ML 3D (bout)", mode="markers",
         marker=dict(color="#fd7e14", size=12, symbol="triangle-up"),
     ))
 
     fig.update_layout(
         title="<b>Profil de Flèche v(x) (Déplacement Y)</b>",
-        xaxis_title="Position x [m]",
-        yaxis_title="Flèche |v(x)| (Déplacement Y) [mm]",
-        paper_bgcolor="#ffffff", plot_bgcolor="#f8f9fa",
-        font=dict(color="#212529"), height=350,
-        legend=dict(orientation="h", y=-0.2),
-        margin=dict(t=50, b=70),
+        xaxis_title="Position x [m]", yaxis_title="Flèche |v(x)| (Déplacement Y) [mm]",
+        paper_bgcolor="#ffffff", plot_bgcolor="#f8f9fa", font=dict(color="#212529"),
+        height=350, legend=dict(orientation="h", y=-0.2), margin=dict(t=50, b=70),
     )
     fig.update_xaxes(gridcolor="#e9ecef")
     fig.update_yaxes(gridcolor="#e9ecef")
@@ -252,7 +245,7 @@ def fig_profil_fleche(res_ef, res_ana, res_ml, F, T, L):
 
 
 def fig_profil_contrainte(res_ef, res_ml, F, T, L):
-    """Profil de contrainte σ_x le long de la poutre (fibre sup.)."""
+    """Trace le profil de contrainte normale σ_x (fibre supérieure)."""
     x_ef = res_ef.get("positions_x", [])
     sig_ef_x = res_ef.get("contrainte_flex_x", [])
     sig_th = res_ef.get("contrainte_thermique_Pa", 0)
@@ -261,27 +254,21 @@ def fig_profil_contrainte(res_ef, res_ml, F, T, L):
 
     if len(x_ef) and len(sig_ef_x):
         fig.add_trace(go.Scatter(
-            x=x_ef, y=(sig_ef_x + sig_th) / 1e6,
-            name="FEA 1D (fibre sup.)",
-            line=dict(color="#28a745", width=2.5),
-            fill="tozeroy", fillcolor="rgba(40,167,69,0.15)",
+            x=x_ef, y=(sig_ef_x + sig_th) / 1e6, name="FEA 1D (fibre sup.)",
+            line=dict(color="#28a745", width=2.5), fill="tozeroy", fillcolor="rgba(40,167,69,0.15)",
         ))
 
     sx_ml = abs(res_ml.get("contrainte_x", 0))
     fig.add_hline(
         y=sx_ml / 1e6, line_dash="dot", line_color="#fd7e14",
-        annotation_text=f"ML max = {sx_ml / 1e6:.1f} MPa",
-        annotation_font_color="#fd7e14",
+        annotation_text=f"ML max = {sx_ml / 1e6:.1f} MPa", annotation_font_color="#fd7e14",
     )
 
     fig.update_layout(
         title="<b>Profil de Contrainte normale σ_x</b> (fibre supérieure)",
-        xaxis_title="Position x [m]",
-        yaxis_title="σ_x [MPa]",
-        paper_bgcolor="#ffffff", plot_bgcolor="#f8f9fa",
-        font=dict(color="#212529"), height=350,
-        legend=dict(orientation="h", y=-0.2),
-        margin=dict(t=50, b=70),
+        xaxis_title="Position x [m]", yaxis_title="σ_x [MPa]",
+        paper_bgcolor="#ffffff", plot_bgcolor="#f8f9fa", font=dict(color="#212529"),
+        height=350, legend=dict(orientation="h", y=-0.2), margin=dict(t=50, b=70),
     )
     fig.update_xaxes(gridcolor="#e9ecef")
     fig.update_yaxes(gridcolor="#e9ecef", zeroline=True, zerolinecolor="#adb5bd")
@@ -289,7 +276,7 @@ def fig_profil_contrainte(res_ef, res_ml, F, T, L):
 
 
 def fig_heatmap_3d(df_pred, cible, F, T, label, unite):
-    """Nuage de points 3D coloré (cartographie ML de la poutre)."""
+    """Génère un nuage de points 3D coloré (Cartographie ML)."""
     if cible not in df_pred.columns:
         return None
 
@@ -298,13 +285,9 @@ def fig_heatmap_3d(df_pred, cible, F, T, label, unite):
         x=df_pred["X"], y=df_pred["Y"], z=df_pred["Z"],
         mode="markers",
         marker=dict(
-            size=3,
-            color=vals,
-            colorscale="Jet",
-            colorbar=dict(
-                title=dict(text=f"{label}<br>[{unite}]", font=dict(color="#212529")),
-                tickfont=dict(color="#212529"),
-            ),
+            size=3, color=vals, colorscale="Jet",
+            colorbar=dict(title=dict(text=f"{label}<br>[{unite}]", font=dict(color="#212529")),
+                          tickfont=dict(color="#212529")),
             opacity=0.8,
         ),
     ))
@@ -314,48 +297,31 @@ def fig_heatmap_3d(df_pred, cible, F, T, label, unite):
             xaxis=dict(title="X [m]", backgroundcolor="#f8f9fa", gridcolor="#e9ecef"),
             yaxis=dict(title="Y [m]", backgroundcolor="#f8f9fa", gridcolor="#e9ecef"),
             zaxis=dict(title="Z [m]", backgroundcolor="#f8f9fa", gridcolor="#e9ecef"),
-            aspectmode='manual',
-            aspectratio=dict(x=3, y=1, z=1),
-            bgcolor="#ffffff",
+            aspectmode='manual', aspectratio=dict(x=3, y=1, z=1), bgcolor="#ffffff",
         ),
-        paper_bgcolor="#ffffff",
-        font=dict(color="#212529"),
-        height=500,
-        margin=dict(t=60, b=10),
+        paper_bgcolor="#ffffff", font=dict(color="#212529"), height=500, margin=dict(t=60, b=10),
     )
     return fig
 
 
 def fig_importance_features(importances):
-    """Importance des variables par cible ML."""
-    labels_map = {
-        "von_mises": "Von Mises",
-        "contrainte_x": "Contrainte X",
-        "deplacement_y": "Déplacement Y",
-    }
+    """Affiche l'importance des variables calculée par le Random Forest."""
+    labels_map = {"von_mises": "Von Mises", "contrainte_x": "Contrainte X", "deplacement_y": "Déplacement Y"}
     couleurs = {"von_mises": "#007bff", "contrainte_x": "#28a745", "deplacement_y": "#fd7e14"}
 
-    fig = make_subplots(
-        rows=1, cols=len(importances),
-        subplot_titles=[labels_map.get(k, k) for k in importances],
-    )
+    fig = make_subplots(rows=1, cols=len(importances), subplot_titles=[labels_map.get(k, k) for k in importances])
     for col, (cible, imp) in enumerate(importances.items(), 1):
-        features = list(imp.keys())
-        vals = list(imp.values())
+        features, vals = list(imp.keys()), list(imp.values())
         idx = np.argsort(vals)
         fig.add_trace(go.Bar(
-            x=[vals[i] for i in idx],
-            y=[features[i] for i in idx],
-            orientation="h",
-            marker_color=couleurs.get(cible, "#6f42c1"),
-            showlegend=False,
+            x=[vals[i] for i in idx], y=[features[i] for i in idx],
+            orientation="h", marker_color=couleurs.get(cible, "#6f42c1"), showlegend=False,
         ), row=1, col=col)
 
     fig.update_layout(
         title="<b>Importance des Variables — Random Forest</b>",
-        paper_bgcolor="#ffffff", plot_bgcolor="#f8f9fa",
-        font=dict(color="#212529"), height=300,
-        margin=dict(t=60, b=20),
+        paper_bgcolor="#ffffff", plot_bgcolor="#f8f9fa", font=dict(color="#212529"),
+        height=300, margin=dict(t=60, b=20),
     )
     fig.update_xaxes(gridcolor="#e9ecef")
     fig.update_yaxes(gridcolor="#e9ecef")
@@ -363,31 +329,23 @@ def fig_importance_features(importances):
 
 
 def fig_scores_kfold(scores_cv):
-    """Graphique R² moyen par cible (Validation Croisée K-Fold)."""
-    labels_map = {
-        "von_mises": "Von Mises",
-        "contrainte_x": "Contrainte X",
-        "deplacement_y": "Déplacement Y",
-    }
-    cibles = [c for c in scores_cv]
+    """Affiche les scores R² obtenus lors de la validation croisée."""
+    labels_map = {"von_mises": "Von Mises", "contrainte_x": "Contrainte X", "deplacement_y": "Déplacement Y"}
+    cibles = list(scores_cv.keys())
     moyennes = [scores_cv[c]["mean"] for c in cibles]
     erreurs = [scores_cv[c]["std"] for c in cibles]
     noms = [labels_map.get(c, c) for c in cibles]
 
     fig = go.Figure(go.Bar(
-        x=noms, y=moyennes,
-        error_y=dict(type="data", array=erreurs, visible=True, color="#dc3545"),
-        marker_color=["#007bff", "#28a745", "#fd7e14"],
-        text=[f"{m:.4f}" for m in moyennes],
-        textposition="outside",
+        x=noms, y=moyennes, error_y=dict(type="data", array=erreurs, visible=True, color="#dc3545"),
+        marker_color=["#007bff", "#28a745", "#fd7e14"], text=[f"{m:.4f}" for m in moyennes], textposition="outside",
     ))
     fig.add_hline(y=1.0, line_dash="dot", line_color="#adb5bd")
     fig.update_layout(
         title="<b>Précision du Modèle (R²) — K-Fold CV</b>",
         yaxis=dict(range=[0.8, 1.05], title="Score R² moyen"),
-        paper_bgcolor="#ffffff", plot_bgcolor="#f8f9fa",
-        font=dict(color="#212529"), height=300,
-        margin=dict(t=50, b=20),
+        paper_bgcolor="#ffffff", plot_bgcolor="#f8f9fa", font=dict(color="#212529"),
+        height=300, margin=dict(t=50, b=20),
     )
     fig.update_xaxes(gridcolor="#e9ecef")
     fig.update_yaxes(gridcolor="#e9ecef")
@@ -396,8 +354,8 @@ def fig_scores_kfold(scores_cv):
 
 def fig_extrapolation_force(modele, cfg, T_fixe):
     """
-    Génère un graphique montrant le comportement du modèle ML vs le modèle Analytique
-    en dehors de son domaine d'entraînement (Extrapolation) pour la Force.
+    Génère un graphique démontrant le comportement du modèle ML vs le modèle Analytique
+    en dehors de son domaine d'entraînement (Extrapolation de la Force).
     """
     forces_kN = np.linspace(0, 100, 21)
     forces_N = forces_kN * 1000
@@ -409,11 +367,11 @@ def fig_extrapolation_force(modele, cfg, T_fixe):
     solveur = SolveurAnalytique(cfg)
 
     for F in forces_N:
-        # Résultat Analytique
+        # Solution analytique (Vérité physique)
         res_ana = solveur.resoudre(F, T_fixe)
         v_ana_list.append(res_ana["fleche_max_m"] * 1e3)
 
-        # Résultat ML
+        # Prédiction ML
         df_pred = modele.predire(grille, F, T_fixe)
         res_ml = modele.extraire_valeurs_max(df_pred)
         v_ml_list.append(abs(res_ml.get("deplacement_y", 0)) * 1e3)
@@ -430,6 +388,7 @@ def fig_extrapolation_force(modele, cfg, T_fixe):
         name='ML 3D (Random Forest)', line=dict(color='#fd7e14', width=3)
     ))
 
+    # Rectangle pour marquer le domaine d'entraînement (10 à 40 kN)
     fig.add_vrect(
         x0=10, x1=40, fillcolor="rgba(40,167,69,0.2)", layer="below", line_width=0,
         annotation_text="Domaine d'entraînement (10-40 kN)", annotation_position="top left"
@@ -437,21 +396,20 @@ def fig_extrapolation_force(modele, cfg, T_fixe):
 
     fig.update_layout(
         title=f"<b>Analyse d'Extrapolation</b> (Flèche Max vs Force) à T={T_fixe}°C",
-        xaxis_title="Force appliquée F [kN]",
-        yaxis_title="Flèche Maximale [mm] (Déplacement Y)",
-        paper_bgcolor="#ffffff", plot_bgcolor="#f8f9fa",
-        font=dict(color="#212529"), height=400,
-        margin=dict(t=50, b=50)
+        xaxis_title="Force appliquée F [kN]", yaxis_title="Flèche Maximale [mm] (Déplacement Y)",
+        paper_bgcolor="#ffffff", plot_bgcolor="#f8f9fa", font=dict(color="#212529"),
+        height=400, margin=dict(t=50, b=50)
     )
     return fig
 
 
 # ════════════════════════════════════════════════════════════════
-#  Métriques résumé
+#  Métriques : Résumé numérique
 # ════════════════════════════════════════════════════════════════
 
 def afficher_metriques(res_ana, res_ef, res_ml):
-    # Unités correctement gérées
+    """Affiche les résultats numériques sous forme de cartes (3 colonnes)."""
+    # Unités correctement gérées (mm et MPa)
     v_ana = res_ana["fleche_max_m"] * 1e3
     v_ef = res_ef["fleche_max_m"] * 1e3
     v_ml = abs(res_ml.get("deplacement_y", 0)) * 1e3
@@ -472,22 +430,18 @@ def afficher_metriques(res_ana, res_ef, res_ml):
     c1, c2, c3 = st.columns(3)
     c1.metric("🔵 Analytique", f"{v_ana:.4f} mm")
     c2.metric("🟢 FEA 1D", f"{v_ef:.4f} mm",
-              delta=f"{ecart_v_ef:.2f}% vs Ana",
-              delta_color="inverse" if ecart_v_ef > 2 else "normal")
+              delta=f"{ecart_v_ef:.2f}% vs Ana", delta_color="inverse" if ecart_v_ef > 2 else "normal")
     c3.metric("🟠 ML 3D", f"{v_ml:.4f} mm",
-              delta=f"{ecart_v_ml:.2f}% vs Ana",
-              delta_color="inverse" if ecart_v_ml > 10 else "normal")
+              delta=f"{ecart_v_ml:.2f}% vs Ana", delta_color="inverse" if ecart_v_ml > 10 else "normal")
 
     # ── Von Mises ──
     st.markdown("**Von Mises Maximale**")
     c4, c5, c6 = st.columns(3)
     c4.metric("🔵 Analytique", f"{vm_ana:.2f} MPa")
     c5.metric("🟢 FEA 1D", f"{vm_ef:.2f} MPa",
-              delta=f"{ecart_vm_ef:.2f}% vs Ana",
-              delta_color="inverse" if ecart_vm_ef > 2 else "normal")
+              delta=f"{ecart_vm_ef:.2f}% vs Ana", delta_color="inverse" if ecart_vm_ef > 2 else "normal")
     c6.metric("🟠 ML 3D", f"{vm_ml:.2f} MPa",
-              delta=f"{ecart_vm_ml:.2f}% vs Ana",
-              delta_color="inverse" if ecart_vm_ml > 10 else "normal")
+              delta=f"{ecart_vm_ml:.2f}% vs Ana", delta_color="inverse" if ecart_vm_ml > 10 else "normal")
 
     # ── Contrainte X ──
     st.markdown("**Contrainte Normale σ_x Maximale**")
@@ -505,10 +459,18 @@ def afficher_metriques(res_ana, res_ef, res_ml):
 # ════════════════════════════════════════════════════════════════
 
 def main():
-    # ── Chargement ──────────────────────────────────────────────
-    cfg = charger_config()
-    df = charger_donnees(cfg)
-    modele = entrainer_modele(df, cfg)
+    # ── Chargement interactif avec "st.status" (Animation UI) ───
+    with st.status("⚙️ Initialisation du Système Thermoélastique...", expanded=True) as status:
+        st.write("📂 Chargement de la configuration YAML...")
+        cfg = charger_config()
+
+        st.write("🔍 Ingestion et fusion des données Ansys...")
+        df = charger_donnees(cfg)
+
+        st.write("🧠 Entraînement du modèle Random Forest 3D...")
+        modele = entrainer_modele(df, cfg)
+
+        status.update(label="✅ Système prêt et modèle entraîné !", state="complete", expanded=False)
 
     # ── Sidebar ─────────────────────────────────────────────────
     force_N, temp_C = sidebar(cfg)
@@ -518,12 +480,12 @@ def main():
     st.caption("Comparaison : Solution Analytique, Éléments Finis 1D & Apprentissage Automatique 3D (Random Forest)")
     st.divider()
 
-    # ── Calculs ─────────────────────────────────────────────────
-    with st.spinner("Calcul en cours..."):
+    # ── Calculs en temps réel ───────────────────────────────────
+    with st.spinner("Calcul des solutions en cours..."):
         res_ana = SolveurAnalytique(cfg).resoudre(force_N, temp_C)
         res_ef = SolveurEF(cfg).resoudre(force_N, temp_C)
 
-        # Ajouter E et I pour le profil de flèche analytique
+        # Ajouter E et I pour le tracé du profil de flèche analytique
         solveur = SolveurAnalytique(cfg)
         res_ana["_E"] = solveur.E
         res_ana["_I"] = solveur.I
@@ -534,7 +496,7 @@ def main():
 
     L = cfg["geometrie"]["longueur"]
 
-    # ── Section 1 : Métriques Classiques ────────────────────────
+    # ── Section 1 : Métriques ───────────────────────────────────
     afficher_metriques(res_ana, res_ef, res_ml)
     st.divider()
 
@@ -542,20 +504,11 @@ def main():
     st.markdown("### 📈 Profils le long de la poutre (X)")
     col1, col2 = st.columns(2)
     with col1:
-        st.plotly_chart(
-            fig_profil_fleche(res_ef, res_ana, res_ml, force_N, temp_C, L),
-            use_container_width=True
-        )
+        st.plotly_chart(fig_profil_fleche(res_ef, res_ana, res_ml, force_N, temp_C, L), use_container_width=True)
     with col2:
-        st.plotly_chart(
-            fig_profil_contrainte(res_ef, res_ml, force_N, temp_C, L),
-            use_container_width=True
-        )
+        st.plotly_chart(fig_profil_contrainte(res_ef, res_ml, force_N, temp_C, L), use_container_width=True)
 
-    st.plotly_chart(
-        fig_comparaison_barres(res_ana, res_ef, res_ml, force_N, temp_C),
-        use_container_width=True
-    )
+    st.plotly_chart(fig_comparaison_barres(res_ana, res_ef, res_ml, force_N, temp_C), use_container_width=True)
     st.divider()
 
     # ── Section 3 : Heatmaps 3D ─────────────────────────────────
@@ -576,7 +529,7 @@ def main():
 
     st.divider()
 
-    # ── Section 4 : Modèle ML ───────────────────────────────────
+    # ── Section 4 : Performance du Modèle ML ────────────────────
     st.markdown("### 🤖 Performance du Modèle ML")
     col3, col4 = st.columns(2)
     with col3:
@@ -586,20 +539,17 @@ def main():
 
     st.divider()
 
-    # ── Section 5 : Analyse d'Extrapolation (Force) ─────────────
+    # ── Section 5 : Analyse d'Extrapolation (Démonstration) ─────
     st.markdown("### ⚠️ Comportement hors domaine (Extrapolation)")
     st.info(
         "Ce graphique illustre la principale limitation des modèles basés sur les arbres de décision (Random Forest). "
         "Il démontre visuellement l'incapacité du modèle à extrapoler la tendance physique au-delà de sa zone d'entraînement [10-40 kN].")
 
-    st.plotly_chart(
-        fig_extrapolation_force(modele, cfg, temp_C),
-        use_container_width=True
-    )
+    st.plotly_chart(fig_extrapolation_force(modele, cfg, temp_C), use_container_width=True)
 
     st.divider()
 
-    # ── Section 6 : Données brutes ──────────────────────────────
+    # ── Section 6 : Données brutes (Expander) ───────────────────
     with st.expander("🗃️ Aperçu des données d'entraînement (Ansys nodes sample)"):
         num_FT = df[['force', 'temperature']].drop_duplicates().shape[0]
         st.caption(
