@@ -1,86 +1,148 @@
-# Projet Thermoélastique : Solveur EF et Modèle de Substitution (Surrogate Model)
+# 🔩 Système Thermoélastique Hybride — FEA 1D & Métamodèle ML 3D
 
-## 📌 Description du Projet
-Ce projet implémente un solveur par éléments finis (FEA) couplé à un modèle de substitution (Machine Learning) en Python. Il est conçu pour analyser le comportement thermoélastique tridimensionnel d'une poutre encastrée soumise à des charges mécaniques et thermiques.
+<div align="center">
 
-L'objectif principal est d'utiliser un modèle d'apprentissage automatique (entraîné sur des données ANSYS) pour prédire instantanément :
-1. Le champ de déplacement 3D en tout point de la structure.
-2. La distribution spatiale des contraintes de Von Mises.
+![Python](https://img.shields.io/badge/Python-3.9%2B-blue?style=flat-square&logo=python&logoColor=white)
+![Streamlit](https://img.shields.io/badge/Streamlit-Dashboard-FF4B4B?style=flat-square&logo=streamlit&logoColor=white)
+![Scikit-Learn](https://img.shields.io/badge/Machine_Learning-Scikit_Learn-F7931E?style=flat-square&logo=scikit-learn&logoColor=white)
+![Plotly](https://img.shields.io/badge/Plotly-Interactive_Charts-3F4F75?style=flat-square&logo=plotly&logoColor=white)
+![Pytest](https://img.shields.io/badge/Tests-Pytest-0A9EDC?style=flat-square&logo=pytest&logoColor=white)
+![ÉTS](https://img.shields.io/badge/ÉTS-Génie_Aérospatial-CE181E?style=flat-square)
 
-## Fonctionnalités
+**Projet de fin de session — MGA 802**
+École de technologie supérieure (ÉTS Montréal)
 
-- Calcul analytique des déplacements
-- Calcul analytique des contraintes
-- Calcul avec ML Random Forest
-- Visualisation interactive des résultats
-- Export des données
-- Validation des calculs avec ML Kfold
+</div>
 
-## 📂 Structure du Projet
-Le code est organisé de manière modulaire (Programmation Orientée Objet) :
+---
+
+## 📌 Description
+
+Ce projet implémente un système d'analyse hybride couplant un solveur **Éléments Finis 1D (FEA)**, un **solveur analytique** (théorie des poutres) et un **métamodèle de Machine Learning** (Random Forest) entraîné sur des données 3D extraites d'ANSYS.
+
+L'objectif est de comparer une approche classique avec un modèle d'apprentissage automatique capable de prédire **instantanément**, en tout point 3D d'une poutre encastrée-libre :
+
+- le **déplacement transversal** (flèche),
+- la **contrainte normale** σₓ,
+- la **contrainte équivalente de Von Mises**,
+
+sous l'effet combiné d'une **force ponctuelle** et d'un **gradient de température**.
+
+---
+
+## ✨ Fonctionnalités
+
+| Module | Description |
+|---|---|
+| 📐 **Solveur Analytique** | Référence théorique (Euler-Bernoulli) pour la flèche et les contraintes de flexion/thermique. |
+| 🟢 **Solveur FEA 1D** | Assemblage matriciel (rigidité, 2 DDL/nœud), résolution `K·U = F`, sans facteur de calibration. |
+| 🤖 **Métamodèle ML** | `RandomForestRegressor` dans un `Pipeline` avec `StandardScaler`, validé par **K-Fold** (k=5). Filtrage des singularités par le **principe de Saint-Venant**. |
+| 🛡️ **Fallback de données** | Génération automatique de données synthétiques physiquement cohérentes si les fichiers ANSYS sont absents. |
+| 📊 **Dashboard Streamlit** | Interface interactive : profils 2D, heatmaps 3D (Plotly), métriques comparatives, et analyse d'**extrapolation** du modèle ML hors de son domaine d'entraînement. |
+| 🧪 **Suite de tests** | 88 tests unitaires/intégration (`pytest`) couvrant la physique, la cohérence inter-solveurs et le pipeline ML. |
+
+---
+
+## 📂 Architecture du Projet
 
 ```text
-projet_thermoelastique/
+Projet_Fin_session/
 │
-├── donnees/                    # Dossier contenant les données d'entraînement (ignoré par Git)
-├── solveurs/                        # Code source du projet
+├── donnees/                     # Données ANSYS (contrainte_F*_T*.txt, etc.)
+├── solveurs/                      # Cœur du moteur de calcul
 │   ├── __init__.py
-│   ├── gestion_donnees.py      # Importation et nettoyage des données ANSYS
-│   ├── solveur_ef.py           # Solveur éléments finis 
-│   ├── solveur_analytique.py   # Solveur analytique 
-│   ├── modele_substitution.py  # Entraînement et prédiction (Machine Learning)
-│   └── visualisation.py        # Génération des heatmaps 3D pour les résultats
-├── tests/                        # Dossier de tests pytest
+│   ├── gestion_donnees.py       # Ingestion, fusion (NodeID) et fallback synthétique
+│   ├── solveur_analytique.py    # Théorie des poutres (Euler-Bernoulli)
+│   ├── solveur_ef.py            # Solveur Éléments Finis 1D
+│   ├── modele_substitution.py   # Pipeline ML (Random Forest + K-Fold)
+│   └── visualisation.py         # Graphiques Matplotlib (mode terminal)
+│
+├── tests/
 │   ├── __init__.py
-│   ├── conftest.py      # Fichier de configuration pour pytest
-│   ├── test_ml.py           # Test du modèle de substitution
-│   └── test_systeme.py       # Test des solveurs analytique et solveur éléments finis, validation de la cohérence des résultas
-├── app.py                     # Interface utilisateur développée avec Streamlit
-├── config.yaml                     # Paramètres de configuration du système thermoélastique
-├── main.py                     # Script principal d'exécution
-├── requirements.txt            # Dépendances du projet
-└── README.md                   # Documentation du projet
-
+│   ├── conftest.py              # Configuration des chemins pour Pytest
+│   ├── test_systeme.py          # Solveurs Analytique/FEA + cohérence physique
+│   └── test_ml.py               # Entraînement, prédiction, Saint-Venant
+│
+├── app.py                       # Dashboard interactif (Streamlit + Plotly)
+├── main.py                      # Exécution en ligne de commande (Terminal)
+├── config.yaml                  # Configuration centrale (géométrie, matériau, ML)
+├── requirements.txt             # Dépendances Python
+└── README.md
 ```
 
-## Installation
-Installer les dépendances :
-```text
+---
+
+## ⚙️ Modèles Mathématiques
+
+### Solveur Analytique (Résistance des Matériaux)
+
+Pour une poutre rectangulaire encastrée-libre de longueur *L*, soumise à une force ponctuelle *F* en bout et un écart de température Δ*T* :
+
+| Quantité | Formule |
+|---|---|
+| Moment quadratique | $I = \dfrac{b h^3}{12}$ |
+| Flèche maximale | $\delta_{max} = \dfrac{F L^3}{3EI}$ |
+| Contrainte de flexion max. | $\sigma_{flex} = \dfrac{Mc}{I} = \dfrac{F L \, c}{I}$ |
+| Contrainte thermique | $\sigma_{th} = E \, \alpha \, \Delta T$ |
+| Contrainte normale totale | $\sigma_x = \sigma_{flex} + \sigma_{th}$ |
+
+### Solveur FEA 1D
+
+Discrétisation en éléments de poutre Euler-Bernoulli (2 DDL/nœud : déplacement *v*, rotation *θ*), assemblage de la matrice de rigidité globale, encastrement appliqué par pénalité, résolution du système linéaire `K·U = F`.
+
+### Métamodèle ML
+
+`RandomForestRegressor` (scikit-learn) entraîné séparément pour les 3 cibles (Von Mises, σₓ, déplacement Y), à partir des variables d'entrée **(X, Y, Z, Force, Température)**. Validation croisée **K-Fold (k=5)** pour estimer le score R² hors échantillon avant l'entraînement final sur 100 % des données.
+
+---
+
+## 🚀 Installation et Démarrage
+
+### 1. Prérequis
+
+Python 3.9 ou plus récent.
+
+```bash
+git clone https://github.com/votre-utilisateur/Projet_Fin_session.git
+cd Projet_Fin_session
 pip install -r requirements.txt
 ```
-## Lancement du programme
-```text
+
+### 2. Dashboard interactif (recommandé)
+
+Interface web avec sliders, heatmaps 3D et analyse d'extrapolation :
+
+```bash
 streamlit run app.py
 ```
 
-## Méthodes utilisées
+### 3. Exécution terminal
 
-### Solveur analytique
+Mode ligne de commande classique avec saisie interactive :
 
-Le solveur analytique utilise les équations classiques de la résistance des matériaux :
-
-- Moment d'inertie :
-  I = bh³/12
-
-- Déplacement maximal :
-  δ = FL³/(3EI)
-
-- Contrainte maximale :
-  σ = Mc/I
-
-### Modèle de substitution
-
-Le modèle de substitution est basé sur l'algorithme Random Forest et une étape de validation utilise le modèle Kfold.
-
-## Tests
-Éxécuter les tests :
-```text
-python -m pytest -v
+```bash
+python main.py
 ```
 
-## Auteurs
+---
 
-Mohammad Shohoudimojdehi et Nicolas Allard  
-MGA 802 : Projet de fin de session  
-École de technologie supérieure (ÉTS)  
+## 🧪 Tests et Validation
 
+```bash
+pytest tests/ -v
+```
+
+| Fichier | Couverture |
+|---|---|
+| `test_systeme.py` | Config YAML, formules analytiques, FEA 1D, cohérence Analytique↔FEA (< 1 % d'écart), symétrie/définie-positivité de la matrice K |
+| `test_ml.py` | Parsing des noms de fichiers, chargement des données, scores K-Fold, monotonie des prédictions, filtre de Saint-Venant, importance des variables |
+
+---
+
+## 👨‍💻 Auteurs
+
+- **Mohammad Shohoudimojdehi**
+- **Nicolas Allard**
+
+Développé dans le cadre du cours **MGA 802 — Projet de fin de session**
+🎓 École de technologie supérieure (ÉTS Montréal)
