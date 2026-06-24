@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "systeme-thermoelastique"
+version = "1.0.0"
+description = "Solveur FEA 1D et modèle de substitution ML 3D pour l'analyse thermoélastique."
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+    { name = "Mohammad Shohoudimojdehi" },
+    { name = "Nicolas Allard" }
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "streamlit",
+    "numpy",
+    "pandas",
+    "plotly",
+    "matplotlib",
+    "scikit-learn",
+    "PyYAML"
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -v"
+testpaths = [
+    "tests",
+]
