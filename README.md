@@ -7,6 +7,7 @@
 ![Scikit-Learn](https://img.shields.io/badge/Machine_Learning-Scikit_Learn-F7931E?style=flat-square&logo=scikit-learn&logoColor=white)
 ![Plotly](https://img.shields.io/badge/Plotly-Interactive_Charts-3F4F75?style=flat-square&logo=plotly&logoColor=white)
 ![Pytest](https://img.shields.io/badge/Tests-Pytest-0A9EDC?style=flat-square&logo=pytest&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)
 ![ÉTS](https://img.shields.io/badge/ÉTS-Génie_Aérospatial-CE181E?style=flat-square)
 
 **Projet de fin de session — MGA 802**
@@ -49,24 +50,25 @@ sous l'effet combiné d'une **force ponctuelle** et d'un **gradient de températ
 Projet_Fin_session/
 │
 ├── donnees/                     # Données ANSYS (contrainte_F*_T*.txt, etc.)
-├── solveurs/                      # Cœur du moteur de calcul
-│   ├── __init__.py
+├── solveurs/                    # Cœur du moteur de calcul
+│   ├── __init__.py               # Expose les modules du package
 │   ├── gestion_donnees.py       # Ingestion, fusion (NodeID) et fallback synthétique
 │   ├── solveur_analytique.py    # Théorie des poutres (Euler-Bernoulli)
 │   ├── solveur_ef.py            # Solveur Éléments Finis 1D
 │   ├── modele_substitution.py   # Pipeline ML (Random Forest + K-Fold)
 │   └── visualisation.py         # Graphiques Matplotlib (mode terminal)
 │
-├── tests/
-│   ├── __init__.py
+├── tests/                       # Suite de tests automatisés
+│   ├── __init__.py               # Expose les modules de test
 │   ├── conftest.py              # Configuration des chemins pour Pytest
 │   ├── test_systeme.py          # Solveurs Analytique/FEA + cohérence physique
 │   └── test_ml.py               # Entraînement, prédiction, Saint-Venant
 │
-├── app.py                       # Dashboard interactif (Streamlit + Plotly)
-├── main.py                      # Exécution en ligne de commande (Terminal)
-├── config.yaml                  # Configuration centrale (géométrie, matériau, ML)
-├── requirements.txt             # Dépendances Python
+├── app.py                        # Dashboard interactif (Streamlit + Plotly)
+├── main.py                       # Exécution en ligne de commande (Terminal)
+├── config.yaml                   # Configuration centrale (géométrie, matériau, ML)
+├── pyproject.toml                # Métadonnées, dépendances et config Pytest
+├── LICENSE                       # Licence MIT
 └── README.md
 ```
 
@@ -105,8 +107,13 @@ Python 3.9 ou plus récent.
 ```bash
 git clone https://github.com/votre-utilisateur/Projet_Fin_session.git
 cd Projet_Fin_session
-pip install -r requirements.txt
+pip install .
 ```
+
+> Les dépendances sont déclarées dans `pyproject.toml`. Pour un environnement de développement modifiable :
+> ```bash
+> pip install -e ".[test]"
+> ```
 
 ### 2. Dashboard interactif (recommandé)
 
@@ -129,8 +136,10 @@ python main.py
 ## 🧪 Tests et Validation
 
 ```bash
-pytest tests/ -v
+pytest
 ```
+
+> Les chemins de tests et options (`-ra -v`) sont préconfigurés dans `pyproject.toml`.
 
 | Fichier | Couverture |
 |---|---|
