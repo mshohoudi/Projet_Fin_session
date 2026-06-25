@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>solveurs package &#8212; Projet_Session_Equipe_1  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="tests package" href="tests.html" />
+    <link rel="prev" title="Projet de fin de session" href="modules.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="solveurs-package">
+<h1>solveurs package<a class="headerlink" href="#solveurs-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-solveurs.gestion_donnees">
+<span id="solveurs-gestion-donnees-module"></span><h2>solveurs.gestion_donnees module<a class="headerlink" href="#module-solveurs.gestion_donnees" title="Link to this heading">¶</a></h2>
+<section id="gestion-donnees-py">
+<h3>gestion_donnees.py<a class="headerlink" href="#gestion-donnees-py" title="Link to this heading">¶</a></h3>
+<p>Lecture, fusion et nettoyage des fichiers texte Ansys (format tab-séparé).
+Merge basé sur NodeID (robuste aux Y/Z quasi-nuls d’Ansys).</p>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="solveurs.gestion_donnees.charger_donnees_ansys">
+<span class="sig-prename descclassname"><span class="pre">solveurs.gestion_donnees.</span></span><span class="sig-name descname"><span class="pre">charger_donnees_ansys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dossier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#solveurs.gestion_donnees.charger_donnees_ansys" title="Link to this definition">¶</a></dt>
+<dd><p>Charge et fusionne les fichiers de résultats ANSYS d’un dossier.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dossier</strong> (<em>str</em>) – Chemin du dossier à lire.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tous les fichiers d’entrée sous la forme d’un DataFrame</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="solveurs.gestion_donnees.charger_ou_generer_donnees">
+<span class="sig-prename descclassname"><span class="pre">solveurs.gestion_donnees.</span></span><span class="sig-name descname"><span class="pre">charger_ou_generer_donnees</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#solveurs.gestion_donnees.charger_ou_generer_donnees" title="Link to this definition">¶</a></dt>
+<dd><p>Charge les données ANSYS ou génère des données synthétiques de secours.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cfg</strong> (<em>dict</em>) – Dictionnaire de configuration du projet.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Les données ANSYS ou celes synthétiques selon le cas.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>FileNotFoundError</strong> – Si aucune donnée n’est trouvée et si la génération synthétique est désactivée.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="solveurs.gestion_donnees.extraire_parametres_nom_fichier">
+<span class="sig-prename descclassname"><span class="pre">solveurs.gestion_donnees.</span></span><span class="sig-name descname"><span class="pre">extraire_parametres_nom_fichier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nom_fichier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#solveurs.gestion_donnees.extraire_parametres_nom_fichier" title="Link to this definition">¶</a></dt>
+<dd><p>Extrait la force et la température contenues dans un nom de fichier ANSYS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nom_fichier</strong> (<em>str</em>) – Nom du fichier à analyser.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>la force et la température contenus dans le fichier.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="solveurs.gestion_donnees.generer_donnees_synthetiques">
+<span class="sig-prename descclassname"><span class="pre">solveurs.gestion_donnees.</span></span><span class="sig-name descname"><span class="pre">generer_donnees_synthetiques</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#solveurs.gestion_donnees.generer_donnees_synthetiques" title="Link to this definition">¶</a></dt>
+<dd><p>Génère un jeu de données synthétiques lorsque les données ANSYS sont absentes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cfg</strong> (<em>dict</em>) – Dictionnaire de configuration du projet.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Jeu de données synthétiques.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="solveurs.gestion_donnees.lire_fichier_ansys">
+<span class="sig-prename descclassname"><span class="pre">solveurs.gestion_donnees.</span></span><span class="sig-name descname"><span class="pre">lire_fichier_ansys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chemin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nom_valeur</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#solveurs.gestion_donnees.lire_fichier_ansys" title="Link to this definition">¶</a></dt>
+<dd><p>Lit un fichier de résultats ANSYS et le convertit en DataFrame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chemin</strong> (<em>str</em>) – Chemin du fichier à lire.</p></li>
+<li><p><strong>nom_valeur</strong> (<em>str</em>) – Nom de la colonne de valeurs à créer.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Fichier converti en DataFrame.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-solveurs.modele_substitution">
+<span id="solveurs-modele-substitution-module"></span><h2>solveurs.modele_substitution module<a class="headerlink" href="#module-solveurs.modele_substitution" title="Link to this heading">¶</a></h2>
+<section id="modele-substitution-py">
+<h3>modele_substitution.py<a class="headerlink" href="#modele-substitution-py" title="Link to this heading">¶</a></h3>
+<p>Modèle de substitution par Random Forest pour une régression multi-cible.</p>
+<p>Le modèle prédit, pour un nœud 3D <code class="docutils literal notranslate"><span class="pre">(X,</span> <span class="pre">Y,</span> <span class="pre">Z)</span></code> et des conditions de
+chargement <code class="docutils literal notranslate"><span class="pre">(F,</span> <span class="pre">T)</span></code>, les grandeurs suivantes :</p>
+<ul class="simple">
+<li><p>Contrainte de Von Mises [Pa]</p></li>
+<li><p>Contrainte normale selon X [Pa]</p></li>
+<li><p>Déplacement selon Y [m]</p></li>
+</ul>
+<p>Le module inclut également :</p>
+<ul class="simple">
+<li><p>Une validation croisée K-Fold avec rapport des scores <span class="math notranslate nohighlight">\(R^2\)</span></p></li>
+<li><p>Un entraînement final sur 100 % des données</p></li>
+<li><p>Un filtrage selon le principe de Saint-Venant avant extraction des valeurs maximales</p></li>
+</ul>
+</section>
+<dl class="py class">
+<dt class="sig sig-object py" id="solveurs.modele_substitution.ModeleSubstitution">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">solveurs.modele_substitution.</span></span><span class="sig-name descname"><span class="pre">ModeleSubstitution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#solveurs.modele_substitution.ModeleSubstitution" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Modèle Random Forest pour la prédiction thermoélastique 3D.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="solveurs.modele_substitution.ModeleSubstitution.entrainer">
+<span class="sig-name descname"><span class="pre">entrainer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#solveurs.modele_substitution.ModeleSubstitution.entrainer" title="Link to this definition">¶</a></dt>
+<dd><p>Entraîne les modèles Random Forest sur l’ensemble des données.</p>
+<p>Un modèle indépendant est créé pour chaque variable cible.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>df</strong> (<em>pandas.DataFrame</em>) – Jeu de données d’entraînement.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Aucun retour. Les modèles entraînés sont enregistrés dans
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">modeles</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="solveurs.modele_substitution.ModeleSubstitution.extraire_valeurs_max">
+<span class="sig-name descname"><span class="pre">extraire_valeurs_max</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_pred</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#solveurs.modele_substitution.ModeleSubstitution.extraire_valeurs_max" title="Link to this definition">¶</a></dt>
+<dd><p>Extrait les valeurs maximales représentatives après application du
+principe de Saint-Venant.</p>
+<p>Les zones proches de l’encastrement et de l’extrémité libre sont
+exclues afin d’éliminer les singularités locales.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>df_pred</strong> (<em>pandas.DataFrame</em>) – Résultats prédits sur la grille de nœuds.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Valeurs maximales absolues de chaque variable cible.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="solveurs.modele_substitution.ModeleSubstitution.importance_features">
+<span class="sig-name descname"><span class="pre">importance_features</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#solveurs.modele_substitution.ModeleSubstitution.importance_features" title="Link to this definition">¶</a></dt>
+<dd><p>Retourne l’importance relative des variables d’entrée.</p>
+<p>Les importances sont extraites directement des modèles Random Forest
+entraînés.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionnaire contenant l’importance des variables pour
+chaque cible.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="solveurs.modele_substitution.ModeleSubstitution.predire">
+<span class="sig-name descname"><span class="pre">predire</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_noeuds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#solveurs.modele_substitution.ModeleSubstitution.predire" title="Link to this definition">¶</a></dt>
+<dd><p>Prédit les résultats thermoélastiques sur une grille de nœuds.</p>
+<p>Les coordonnées spatiales sont complétées par les conditions de
+chargement avant d’être transmises aux modèles Random Forest.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df_noeuds</strong> (<em>pandas.DataFrame</em>) – Coordonnées des nœuds à prédire.</p></li>
+<li><p><strong>force</strong> (<em>float</em>) – Force ponctuelle appliquée [N].</p></li>
+<li><p><strong>temp</strong> (<em>float</em>) – Température appliquée [°C].</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>RuntimeError</strong> – Si le modèle n’a pas été entraîné.</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>DataFrame contenant les coordonnées des nœuds ainsi que les
+prédictions des différentes variables cibles.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>pandas.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="solveurs.modele_substitution.ModeleSubstitution.valider">
+<span class="sig-name descname"><span class="pre">valider</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#solveurs.modele_substitution.ModeleSubstitution.valider" title="Link to this definition">¶</a></dt>
+<dd><p>Effectue une validation croisée K-Fold du modèle.</p>
+<p>Chaque variable cible est validée indépendamment à l’aide d’une
+validation croisée K-Fold. Les performances sont évaluées avec le
+coefficient de détermination <span class="math notranslate nohighlight">\(R^2\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>df</strong> (<em>pandas.DataFrame</em>) – Jeu de données contenant les variables d’entrée et les
+variables cibles.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Aucun retour. Les résultats sont stockés dans
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">scores_cv</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-solveurs.solveur_analytique">
+<span id="solveurs-solveur-analytique-module"></span><h2>solveurs.solveur_analytique module<a class="headerlink" href="#module-solveurs.solveur_analytique" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="solveurs.solveur_analytique.SolveurAnalytique">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">solveurs.solveur_analytique.</span></span><span class="sig-name descname"><span class="pre">SolveurAnalytique</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#solveurs.solveur_analytique.SolveurAnalytique" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Résolution analytique thermoélastique d’une poutre encastrée-libre
+soumise à une charge ponctuelle en bout et un gradient de température.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="solveurs.solveur_analytique.SolveurAnalytique.contrainte_flexion_max">
+<span class="sig-name descname"><span class="pre">contrainte_flexion_max</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">F</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#solveurs.solveur_analytique.SolveurAnalytique.contrainte_flexion_max" title="Link to this definition">¶</a></dt>
+<dd><p>Calcule la contrainte maximale de flexion.</p>
+<p>La contrainte est évaluée à l’encastrement à l’aide de la formule
+de Navier.</p>
+<div class="math notranslate nohighlight">
+\[\sigma = \frac{Mc}{I}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>F</strong> (<em>float</em>) – Force ponctuelle appliquée [N].</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Contrainte maximale de flexion [Pa].</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="solveurs.solveur_analytique.SolveurAnalytique.contrainte_thermique">
+<span class="sig-name descname"><span class="pre">contrainte_thermique</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#solveurs.solveur_analytique.SolveurAnalytique.contrainte_thermique" title="Link to this definition">¶</a></dt>
+<dd><p>Calcule la contrainte thermique uniforme.</p>
+<p>La contrainte thermique est calculée en supposant que la dilatation
+longitudinale est complètement empêchée.</p>
+<div class="math notranslate nohighlight">
+\[\sigma_{th}=E\alpha\Delta T\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>T</strong> (<em>float</em>) – Température appliquée [°C].</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Contrainte thermique uniforme [Pa].</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="solveurs.solveur_analytique.SolveurAnalytique.contrainte_x_en_section">
+<span class="sig-name descname"><span class="pre">contrainte_x_en_section</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">F</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#solveurs.solveur_analytique.SolveurAnalytique.contrainte_x_en_section" title="Link to this definition">¶</a></dt>
+<dd><p>Calcule la contrainte normale selon l’axe X dans une section de la
+poutre.</p>
+<p>La contrainte totale est obtenue par superposition de la contrainte
+de flexion et de la contrainte thermique.</p>
+<div class="math notranslate nohighlight">
+\[\sigma_x(x,y)=\frac{M(x)y}{I}+E\alpha\Delta T\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>F</strong> (<em>float</em>) – Force ponctuelle appliquée [N].</p></li>
+<li><p><strong>T</strong> (<em>float</em>) – Température appliquée [°C].</p></li>
+<li><p><strong>x</strong> (<em>float</em>) – Position de la section le long de la poutre [m].</p></li>
+<li><p><strong>y</strong> (<em>numpy.ndarray</em>) – Coordonnées dans la section mesurées depuis l’axe neutre [m].</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Distribution de la contrainte normale selon X [Pa].</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="solveurs.solveur_analytique.SolveurAnalytique.fleche_en_x">
+<span class="sig-name descname"><span class="pre">fleche_en_x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">F</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#solveurs.solveur_analytique.SolveurAnalytique.fleche_en_x" title="Link to this definition">¶</a></dt>
+<dd><p>Calcule le profil de flèche le long de la poutre.</p>
+<div class="math notranslate nohighlight">
+\[v(x)=\frac{F x^2 (3L-x)}{6EI}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>F</strong> (<em>float</em>) – Force ponctuelle appliquée à l’extrémité libre [N].</p></li>
+<li><p><strong>x</strong> (<em>numpy.ndarray</em>) – Positions le long de la poutre [m].</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Flèche calculée pour chaque position.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="solveurs.solveur_analytique.SolveurAnalytique.fleche_max">
+<span class="sig-name descname"><span class="pre">fleche_max</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">F</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#solveurs.solveur_analytique.SolveurAnalytique.fleche_max" title="Link to this definition">¶</a></dt>
+<dd><p>Calcule la flèche maximale à l’extrémité libre.</p>
+<p>La solution est obtenue à partir de la théorie des poutres
+d’Euler-Bernoulli.</p>
+<div class="math notranslate nohighlight">
+\[v_{max}=\frac{FL^3}{3EI}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>F</strong> (<em>float</em>) – Force ponctuelle appliquée à l’extrémité libre [N].</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Flèche maximale de la poutre [m].</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="solveurs.solveur_analytique.SolveurAnalytique.resoudre">
+<span class="sig-name descname"><span class="pre">resoudre</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">F</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#solveurs.solveur_analytique.SolveurAnalytique.resoudre" title="Link to this definition">¶</a></dt>
+<dd><p>Résout analytiquement le problème thermoélastique.</p>
+<p>Calcule la flèche maximale, les contraintes de flexion, la
+contrainte thermique, la contrainte normale maximale et la
+contrainte équivalente de Von Mises.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>F</strong> (<em>float</em>) – Force ponctuelle appliquée [N].</p></li>
+<li><p><strong>T</strong> (<em>float</em>) – Température appliquée [°C].</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>Dictionnaire contenant les résultats analytiques.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">fleche_max_m</span></code> : flèche maximale [m]</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">contrainte_flex_max_Pa</span></code> : contrainte maximale de flexion [Pa]</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">contrainte_thermique_Pa</span></code> : contrainte thermique [Pa]</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">contrainte_x_max_Pa</span></code> : contrainte normale maximale [Pa]</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">von_mises_max_Pa</span></code> : contrainte maximale de Von Mises [Pa]</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="solveurs.solveur_analytique.SolveurAnalytique.von_mises_max">
+<span class="sig-name descname"><span class="pre">von_mises_max</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">F</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#solveurs.solveur_analytique.SolveurAnalytique.von_mises_max" title="Link to this definition">¶</a></dt>
+<dd><p>Calcule la contrainte maximale de Von Mises.</p>
+<p>Pour cette modélisation de poutre, seules les contraintes normales
+sont considérées. La contrainte de Von Mises est donc assimilée à
+la valeur absolue de la contrainte normale maximale.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>F</strong> (<em>float</em>) – Force ponctuelle appliquée [N].</p></li>
+<li><p><strong>T</strong> (<em>float</em>) – Température appliquée [°C].</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Contrainte maximale de Von Mises [Pa].</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-solveurs.solveur_ef">
+<span id="solveurs-solveur-ef-module"></span><h2>solveurs.solveur_ef module<a class="headerlink" href="#module-solveurs.solveur_ef" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="solveurs.solveur_ef.SolveurEF">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">solveurs.solveur_ef.</span></span><span class="sig-name descname"><span class="pre">SolveurEF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#solveurs.solveur_ef.SolveurEF" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Solveur par éléments finis 1D pour une poutre d’Euler-Bernoulli
+encastrée-libre.</p>
+<p>Le modèle utilise deux degrés de liberté par nœud : le déplacement
+transversal <code class="docutils literal notranslate"><span class="pre">v</span></code> et la rotation <code class="docutils literal notranslate"><span class="pre">theta</span></code>. Chaque élément possède donc
+quatre degrés de liberté locaux : <code class="docutils literal notranslate"><span class="pre">[v1,</span> <span class="pre">theta1,</span> <span class="pre">v2,</span> <span class="pre">theta2]</span></code>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="solveurs.solveur_ef.SolveurEF.resoudre">
+<span class="sig-name descname"><span class="pre">resoudre</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">F</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#solveurs.solveur_ef.SolveurEF.resoudre" title="Link to this definition">¶</a></dt>
+<dd><p>Résout le système éléments finis et effectue le post-traitement.</p>
+<p>Le système linéaire résolu est :</p>
+<div class="math notranslate nohighlight">
+\[KU = f\]</div>
+<p>où <code class="docutils literal notranslate"><span class="pre">K</span></code> est la matrice de rigidité globale, <code class="docutils literal notranslate"><span class="pre">U</span></code> le vecteur des
+déplacements et rotations nodales, et <code class="docutils literal notranslate"><span class="pre">f</span></code> le vecteur des forces nodales.</p>
+<p>Après la résolution, la méthode calcule la flèche maximale, le moment
+fléchissant, les contraintes de flexion, la contrainte thermique et la
+contrainte équivalente de Von Mises.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>F</strong> (<em>float</em>) – Force ponctuelle appliquée à l’extrémité libre [N].</p></li>
+<li><p><strong>T</strong> (<em>float</em>) – Température appliquée [°C].</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionnaire contenant les résultats du solveur EF.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-solveurs.visualisation">
+<span id="solveurs-visualisation-module"></span><h2>solveurs.visualisation module<a class="headerlink" href="#module-solveurs.visualisation" title="Link to this heading">¶</a></h2>
+<section id="visualisation-py">
+<h3>visualisation.py<a class="headerlink" href="#visualisation-py" title="Link to this heading">¶</a></h3>
+<p>Génération des cartographies 3D (heatmaps) des contraintes et déplacements
+prédits par le modèle ML, ainsi que des comparaisons graphiques
+entre la théorie, le FEA 1D et l’IA.</p>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="solveurs.visualisation.afficher_toutes_les_figures">
+<span class="sig-prename descclassname"><span class="pre">solveurs.visualisation.</span></span><span class="sig-name descname"><span class="pre">afficher_toutes_les_figures</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_pred</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res_analytique</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res_ef</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res_ml</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">importances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">F</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">L</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#solveurs.visualisation.afficher_toutes_les_figures" title="Link to this definition">¶</a></dt>
+<dd><p>Génère et affiche toutes les figures de post-traitement.</p>
+<p>Cette fonction crée les cartographies 3D des grandeurs prédites, la figure
+comparative entre les méthodes analytique, EF et ML, ainsi que les
+graphiques d’importance des variables lorsque celles-ci sont disponibles.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df_pred</strong> (<em>pandas.DataFrame</em>) – DataFrame contenant les prédictions ML sur la grille 3D.</p></li>
+<li><p><strong>res_analytique</strong> (<em>dict</em>) – Résultats du solveur analytique.</p></li>
+<li><p><strong>res_ef</strong> (<em>dict</em>) – Résultats du solveur éléments finis 1D.</p></li>
+<li><p><strong>res_ml</strong> (<em>dict</em>) – Résultats caractéristiques du modèle ML.</p></li>
+<li><p><strong>importances</strong> (<em>dict</em>) – Importance des variables du modèle Random Forest.</p></li>
+<li><p><strong>F</strong> (<em>float</em>) – Force appliquée [N].</p></li>
+<li><p><strong>T</strong> (<em>float</em>) – Température appliquée [°C].</p></li>
+<li><p><strong>L</strong> (<em>float</em>) – Longueur totale de la poutre [m].</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Aucun retour. Les figures sont affichées avec <code class="docutils literal notranslate"><span class="pre">plt.show()</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="solveurs.visualisation.graphique_comparaison">
+<span class="sig-prename descclassname"><span class="pre">solveurs.visualisation.</span></span><span class="sig-name descname"><span class="pre">graphique_comparaison</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">res_analytique</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res_ef</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res_ml</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">F</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">L</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Figure</span></span></span><a class="headerlink" href="#solveurs.visualisation.graphique_comparaison" title="Link to this definition">¶</a></dt>
+<dd><p>Génère une figure comparative entre les solutions analytique, EF et ML.</p>
+<p>La figure contient quatre panneaux :</p>
+<ul class="simple">
+<li><p>profil de flèche le long de la poutre;</p></li>
+<li><p>profil de contrainte normale selon <code class="docutils literal notranslate"><span class="pre">X</span></code>;</p></li>
+<li><p>comparaison de la flèche maximale;</p></li>
+<li><p>comparaison de la contrainte de Von Mises maximale.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>res_analytique</strong> (<em>dict</em>) – Résultats retournés par le solveur analytique.</p></li>
+<li><p><strong>res_ef</strong> (<em>dict</em>) – Résultats retournés par le solveur éléments finis 1D.</p></li>
+<li><p><strong>res_ml</strong> (<em>dict</em>) – Résultats caractéristiques retournés par le modèle ML.</p></li>
+<li><p><strong>F</strong> (<em>float</em>) – Force appliquée [N].</p></li>
+<li><p><strong>T</strong> (<em>float</em>) – Température appliquée [°C].</p></li>
+<li><p><strong>L</strong> (<em>float</em>) – Longueur totale de la poutre [m].</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Figure Matplotlib contenant les quatre graphiques comparatifs.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>matplotlib.figure.Figure</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="solveurs.visualisation.graphique_importance_features">
+<span class="sig-prename descclassname"><span class="pre">solveurs.visualisation.</span></span><span class="sig-name descname"><span class="pre">graphique_importance_features</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">importances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Figure</span></span></span><a class="headerlink" href="#solveurs.visualisation.graphique_importance_features" title="Link to this definition">¶</a></dt>
+<dd><p>Génère les graphiques d’importance des variables du modèle ML.</p>
+<p>Chaque sous-graphique représente l’importance relative des variables
+d’entrée pour une variable cible du modèle Random Forest.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>importances</strong> (<em>dict</em>) – Dictionnaire contenant, pour chaque cible, les
+importances associées aux variables d’entrée.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Figure Matplotlib contenant les graphiques d’importance.
+Retourne <code class="docutils literal notranslate"><span class="pre">None</span></code> si aucune importance n’est fournie.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>matplotlib.figure.Figure or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="solveurs.visualisation.heatmap_3d">
+<span class="sig-prename descclassname"><span class="pre">solveurs.visualisation.</span></span><span class="sig-name descname"><span class="pre">heatmap_3d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_pred</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cible</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">F</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">etiquette</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unite</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Pa'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Figure</span></span></span><a class="headerlink" href="#solveurs.visualisation.heatmap_3d" title="Link to this definition">¶</a></dt>
+<dd><p>Génère une cartographie 3D colorée d’une variable prédite.</p>
+<p>La fonction affiche les nœuds de la poutre dans l’espace <code class="docutils literal notranslate"><span class="pre">X</span></code>, <code class="docutils literal notranslate"><span class="pre">Y</span></code> et
+<code class="docutils literal notranslate"><span class="pre">Z</span></code>. La couleur de chaque point représente la valeur de la variable
+spécifiée par <code class="docutils literal notranslate"><span class="pre">cible</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df_pred</strong> (<em>pandas.DataFrame</em>) – DataFrame contenant les coordonnées des nœuds et les
+prédictions du modèle.</p></li>
+<li><p><strong>cible</strong> (<em>str</em>) – Nom de la colonne à représenter sous forme de couleur.</p></li>
+<li><p><strong>F</strong> (<em>float</em>) – Force appliquée [N].</p></li>
+<li><p><strong>T</strong> (<em>float</em>) – Température appliquée [°C].</p></li>
+<li><p><strong>etiquette</strong> (<em>str</em><em>, </em><em>optional</em>) – Nom affiché dans la barre de couleur. Si <code class="docutils literal notranslate"><span class="pre">None</span></code>, le nom
+de la cible est utilisé.</p></li>
+<li><p><strong>unite</strong> (<em>str</em><em>, </em><em>optional</em>) – Unité affichée dans la barre de couleur.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Figure Matplotlib contenant la cartographie 3D. Retourne <code class="docutils literal notranslate"><span class="pre">None</span></code>
+si la colonne demandée est absente.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>matplotlib.figure.Figure or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-solveurs">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-solveurs" title="Link to this heading">¶</a></h2>
+<p>Package contenant les solveurs et modules principaux du projet.</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Projet_Session_Equipe_1</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Projet de fin de session</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">solveurs package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tests.html">tests package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main.html">main module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="app.html">app module</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">Projet de fin de session</a><ul>
+      <li>Previous: <a href="modules.html" title="previous chapter">Projet de fin de session</a></li>
+      <li>Next: <a href="tests.html" title="next chapter">tests package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2026, Mohammad Shohoudimojdehi et Nicolas Allard.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/solveurs.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

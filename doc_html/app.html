@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>app module &#8212; Projet_Session_Equipe_1  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="main module" href="main.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-app">
+<span id="app-module"></span><h1>app module<a class="headerlink" href="#module-app" title="Link to this heading">¶</a></h1>
+<section id="app-py-dashboard-streamlit">
+<h2>app.py — Dashboard Streamlit<a class="headerlink" href="#app-py-dashboard-streamlit" title="Link to this heading">¶</a></h2>
+<p>Interface graphique pour le Système Thermoélastique Hybride.
+Remplace l’interface terminal de main.py.</p>
+<dl class="simple">
+<dt>Lancement :</dt><dd><p>streamlit run app.py</p>
+</dd>
+</dl>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.afficher_metriques">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">afficher_metriques</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">res_ana</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res_ef</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res_ml</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app.afficher_metriques" title="Link to this definition">¶</a></dt>
+<dd><p>Affiche les résultats numériques sous forme de métriques Streamlit.</p>
+<p>Les valeurs calculées sont présentées pour les trois méthodes de
+résolution ainsi que les écarts relatifs entre celles-ci.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>res_ana</strong> (<em>dict</em>) – Résultats du solveur analytique.</p></li>
+<li><p><strong>res_ef</strong> (<em>dict</em>) – Résultats du solveur EF.</p></li>
+<li><p><strong>res_ml</strong> (<em>dict</em>) – Résultats du modèle ML.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Aucun retour.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.charger_config">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">charger_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.charger_config" title="Link to this definition">¶</a></dt>
+<dd><p>Charge le fichier de configuration YAML.</p>
+<p>Le fichier contient les propriétés géométriques, matérielles,
+numériques ainsi que les paramètres du modèle d’apprentissage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionnaire contenant la configuration du projet.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.charger_donnees">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">charger_donnees</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app.charger_donnees" title="Link to this definition">¶</a></dt>
+<dd><p>Charge les données d’entraînement.</p>
+<p>Les données sont importées depuis les simulations Ansys ou générées
+automatiquement lorsqu’aucun fichier n’est disponible.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cfg</strong> (<em>dict</em>) – Dictionnaire de configuration.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Jeu de données utilisé pour l’entraînement du modèle.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pandas.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.entrainer_modele">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">entrainer_modele</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cfg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app.entrainer_modele" title="Link to this definition">¶</a></dt>
+<dd><p>Initialise, valide et entraîne le modèle de substitution.</p>
+<p>Une validation croisée K-Fold est réalisée avant l’entraînement
+final sur l’ensemble des données.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>_df</strong> (<em>pandas.DataFrame</em>) – Jeu de données d’entraînement.</p></li>
+<li><p><strong>cfg</strong> (<em>dict</em>) – Dictionnaire de configuration.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Modèle de substitution entraîné.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="solveurs.html#solveurs.modele_substitution.ModeleSubstitution" title="solveurs.modele_substitution.ModeleSubstitution">ModeleSubstitution</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.fig_comparaison_barres">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">fig_comparaison_barres</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">res_ana</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res_ef</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res_ml</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">F</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app.fig_comparaison_barres" title="Link to this definition">¶</a></dt>
+<dd><p>Génère les graphiques comparant les résultats des trois méthodes.</p>
+<p>Deux diagrammes sont créés :</p>
+<ul class="simple">
+<li><p>comparaison de la flèche maximale;</p></li>
+<li><p>comparaison de la contrainte maximale de Von Mises.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>res_ana</strong> (<em>dict</em>) – Résultats du solveur analytique.</p></li>
+<li><p><strong>res_ef</strong> (<em>dict</em>) – Résultats du solveur EF.</p></li>
+<li><p><strong>res_ml</strong> (<em>dict</em>) – Résultats du modèle ML.</p></li>
+<li><p><strong>F</strong> (<em>float</em>) – Force appliquée [N].</p></li>
+<li><p><strong>T</strong> (<em>float</em>) – Température appliquée [°C].</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Figure Plotly.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>plotly.graph_objects.Figure</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.fig_extrapolation_force">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">fig_extrapolation_force</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modele</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cfg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T_fixe</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app.fig_extrapolation_force" title="Link to this definition">¶</a></dt>
+<dd><p>Illustre le comportement du modèle hors de son domaine
+d’entraînement.</p>
+<p>Les prédictions du modèle ML sont comparées à la solution
+analytique pour une large plage de forces.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>modele</strong> (<a class="reference internal" href="solveurs.html#solveurs.modele_substitution.ModeleSubstitution" title="solveurs.modele_substitution.ModeleSubstitution"><em>ModeleSubstitution</em></a>) – Modèle de substitution entraîné.</p></li>
+<li><p><strong>cfg</strong> (<em>dict</em>) – Dictionnaire de configuration.</p></li>
+<li><p><strong>T_fixe</strong> (<em>float</em>) – Température maintenue constante [°C].</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Figure Plotly.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>plotly.graph_objects.Figure</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.fig_heatmap_3d">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">fig_heatmap_3d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_pred</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cible</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">F</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unite</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app.fig_heatmap_3d" title="Link to this definition">¶</a></dt>
+<dd><p>Génère une cartographie tridimensionnelle des prédictions ML.</p>
+<p>Chaque point est coloré selon la valeur de la grandeur sélectionnée.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df_pred</strong> (<em>pandas.DataFrame</em>) – Résultats prédits sur la grille.</p></li>
+<li><p><strong>cible</strong> (<em>str</em>) – Nom de la variable à représenter.</p></li>
+<li><p><strong>F</strong> (<em>float</em>) – Force appliquée [N].</p></li>
+<li><p><strong>T</strong> (<em>float</em>) – Température appliquée [°C].</p></li>
+<li><p><strong>label</strong> (<em>str</em>) – Nom affiché dans la barre de couleurs.</p></li>
+<li><p><strong>unite</strong> (<em>str</em>) – Unité de la grandeur.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Figure Plotly ou <code class="docutils literal notranslate"><span class="pre">None</span></code> si la variable est absente.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>plotly.graph_objects.Figure or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.fig_importance_features">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">fig_importance_features</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">importances</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app.fig_importance_features" title="Link to this definition">¶</a></dt>
+<dd><p>Génère le graphique d’importance des variables du modèle Random Forest.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>importances</strong> (<em>dict</em>) – Importance des variables d’entrée.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Figure Plotly.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>plotly.graph_objects.Figure</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.fig_profil_contrainte">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">fig_profil_contrainte</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">res_ef</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res_ml</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">F</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">L</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app.fig_profil_contrainte" title="Link to this definition">¶</a></dt>
+<dd><p>Génère le profil de la contrainte normale selon l’axe X.</p>
+<p>Le graphique compare la distribution obtenue par le solveur EF avec
+la valeur maximale prédite par le modèle ML.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>res_ef</strong> (<em>dict</em>) – Résultats du solveur EF.</p></li>
+<li><p><strong>res_ml</strong> (<em>dict</em>) – Résultats du modèle ML.</p></li>
+<li><p><strong>F</strong> (<em>float</em>) – Force appliquée [N].</p></li>
+<li><p><strong>T</strong> (<em>float</em>) – Température appliquée [°C].</p></li>
+<li><p><strong>L</strong> (<em>float</em>) – Longueur de la poutre [m].</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Figure Plotly.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>plotly.graph_objects.Figure</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.fig_profil_fleche">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">fig_profil_fleche</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">res_ef</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res_ana</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res_ml</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">F</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">L</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app.fig_profil_fleche" title="Link to this definition">¶</a></dt>
+<dd><p>Génère le profil de flèche le long de la poutre.</p>
+<p>Les résultats analytiques, EF et ML sont représentés sur un même
+graphique.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>res_ef</strong> (<em>dict</em>) – Résultats du solveur EF.</p></li>
+<li><p><strong>res_ana</strong> (<em>dict</em>) – Résultats du solveur analytique.</p></li>
+<li><p><strong>res_ml</strong> (<em>dict</em>) – Résultats du modèle ML.</p></li>
+<li><p><strong>F</strong> (<em>float</em>) – Force appliquée [N].</p></li>
+<li><p><strong>T</strong> (<em>float</em>) – Température appliquée [°C].</p></li>
+<li><p><strong>L</strong> (<em>float</em>) – Longueur de la poutre [m].</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Figure Plotly.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>plotly.graph_objects.Figure</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.fig_scores_kfold">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">fig_scores_kfold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scores_cv</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app.fig_scores_kfold" title="Link to this definition">¶</a></dt>
+<dd><p>Génère le graphique des scores de validation croisée.</p>
+<p>Les scores moyens et leurs écarts-types sont affichés sous forme de
+diagramme en barres.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>scores_cv</strong> (<em>dict</em>) – Résultats de la validation croisée.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Figure Plotly.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>plotly.graph_objects.Figure</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.generer_grille">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">generer_grille</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#app.generer_grille" title="Link to this definition">¶</a></dt>
+<dd><p>Génère la grille tridimensionnelle utilisée pour les prédictions ML.</p>
+<p>Les coordonnées sont créées à partir de la géométrie de la poutre
+afin de produire un ensemble régulier de points dans le volume.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cfg</strong> (<em>dict</em>) – Dictionnaire de configuration.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>DataFrame contenant les coordonnées des nœuds.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pandas.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.main">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.main" title="Link to this definition">¶</a></dt>
+<dd><p>Exécute l’application Streamlit.</p>
+<p>Cette fonction coordonne le chargement de la configuration, le
+chargement des données, l’entraînement du modèle de substitution,
+l’exécution des solveurs analytique et EF, ainsi que la génération
+de l’ensemble des graphiques et des tableaux de résultats.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Aucun retour.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.sidebar">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">sidebar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app.sidebar" title="Link to this definition">¶</a></dt>
+<dd><p>Construit la barre latérale de l’application Streamlit.</p>
+<p>La barre latérale permet d’afficher les caractéristiques de la
+poutre et de définir les conditions de chargement utilisées pour
+les calculs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cfg</strong> (<em>dict</em>) – Dictionnaire de configuration.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Force appliquée [N] et température [°C].</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[float, float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Projet_Session_Equipe_1</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Projet de fin de session</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="solveurs.html">solveurs package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tests.html">tests package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main.html">main module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">app module</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">Projet de fin de session</a><ul>
+      <li>Previous: <a href="main.html" title="previous chapter">main module</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2026, Mohammad Shohoudimojdehi et Nicolas Allard.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/app.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

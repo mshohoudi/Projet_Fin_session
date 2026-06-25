@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>gestion_donnees module &#8212; Projet_Session_Equipe_1  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-gestion_donnees">
+<span id="gestion-donnees-module"></span><h1>gestion_donnees module<a class="headerlink" href="#module-gestion_donnees" title="Link to this heading">¶</a></h1>
+<section id="gestion-donnees-py">
+<h2>gestion_donnees.py<a class="headerlink" href="#gestion-donnees-py" title="Link to this heading">¶</a></h2>
+<p>Lecture, fusion et nettoyage des fichiers texte Ansys (format tab-séparé).
+Merge basé sur NodeID (robuste aux Y/Z quasi-nuls d’Ansys).</p>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="gestion_donnees.charger_donnees_ansys">
+<span class="sig-prename descclassname"><span class="pre">gestion_donnees.</span></span><span class="sig-name descname"><span class="pre">charger_donnees_ansys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dossier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#gestion_donnees.charger_donnees_ansys" title="Link to this definition">¶</a></dt>
+<dd><p>Charge et fusionne les fichiers de résultats ANSYS d’un dossier.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dossier</strong> (<em>str</em>) – Chemin du dossier à lire.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tous les fichiers d’entrée sous la forme d’un DataFrame</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gestion_donnees.charger_ou_generer_donnees">
+<span class="sig-prename descclassname"><span class="pre">gestion_donnees.</span></span><span class="sig-name descname"><span class="pre">charger_ou_generer_donnees</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#gestion_donnees.charger_ou_generer_donnees" title="Link to this definition">¶</a></dt>
+<dd><p>Charge les données ANSYS ou génère des données synthétiques de secours.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cfg</strong> (<em>dict</em>) – Dictionnaire de configuration du projet.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Les données ANSYS ou celes synthétiques selon le cas.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>FileNotFoundError</strong> – Si aucune donnée n’est trouvée et si la génération synthétique est désactivée.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gestion_donnees.extraire_parametres_nom_fichier">
+<span class="sig-prename descclassname"><span class="pre">gestion_donnees.</span></span><span class="sig-name descname"><span class="pre">extraire_parametres_nom_fichier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nom_fichier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gestion_donnees.extraire_parametres_nom_fichier" title="Link to this definition">¶</a></dt>
+<dd><p>Extrait la force et la température contenues dans un nom de fichier ANSYS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nom_fichier</strong> (<em>str</em>) – Nom du fichier à analyser.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>la force et la température contenus dans le fichier.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gestion_donnees.generer_donnees_synthetiques">
+<span class="sig-prename descclassname"><span class="pre">gestion_donnees.</span></span><span class="sig-name descname"><span class="pre">generer_donnees_synthetiques</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#gestion_donnees.generer_donnees_synthetiques" title="Link to this definition">¶</a></dt>
+<dd><p>Génère un jeu de données synthétiques lorsque les données ANSYS sont absentes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cfg</strong> (<em>dict</em>) – Dictionnaire de configuration du projet.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Jeu de données synthétiques.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gestion_donnees.lire_fichier_ansys">
+<span class="sig-prename descclassname"><span class="pre">gestion_donnees.</span></span><span class="sig-name descname"><span class="pre">lire_fichier_ansys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chemin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nom_valeur</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#gestion_donnees.lire_fichier_ansys" title="Link to this definition">¶</a></dt>
+<dd><p>Lit un fichier de résultats ANSYS et le convertit en DataFrame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chemin</strong> (<em>str</em>) – Chemin du fichier à lire.</p></li>
+<li><p><strong>nom_valeur</strong> (<em>str</em>) – Nom de la colonne de valeurs à créer.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Fichier converti en DataFrame.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Projet_Session_Equipe_1</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2026, Mohammad Shohoudimojdehi et Nicolas Allard.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/gestion_donnees.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

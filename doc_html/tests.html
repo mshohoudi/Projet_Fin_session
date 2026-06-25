@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>tests package &#8212; Projet_Session_Equipe_1  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="main module" href="main.html" />
+    <link rel="prev" title="solveurs package" href="solveurs.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="tests-package">
+<h1>tests package<a class="headerlink" href="#tests-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-tests.conftest">
+<span id="tests-conftest-module"></span><h2>tests.conftest module<a class="headerlink" href="#module-tests.conftest" title="Link to this heading">¶</a></h2>
+<section id="conftest-py">
+<h3>conftest.py<a class="headerlink" href="#conftest-py" title="Link to this heading">¶</a></h3>
+<p>Fichier de configuration pour pytest.
+Permet d’ajouter les répertoires nécessaires au PYTHONPATH avant l’exécution des tests.</p>
+</section>
+</section>
+<section id="module-tests.test_ml">
+<span id="tests-test-ml-module"></span><h2>tests.test_ml module<a class="headerlink" href="#module-tests.test_ml" title="Link to this heading">¶</a></h2>
+<section id="test-ml-py">
+<h3>test_ml.py<a class="headerlink" href="#test-ml-py" title="Link to this heading">¶</a></h3>
+<p>Tests unitaires et d’intégration pour le Modèle de Substitution ML.</p>
+<dl class="simple">
+<dt>Lancement :</dt><dd><p>pytest tests/test_ml.py -v</p>
+</dd>
+</dl>
+</section>
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.test_ml.TestChargementDonnees">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">tests.test_ml.</span></span><span class="sig-name descname"><span class="pre">TestChargementDonnees</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestChargementDonnees" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestChargementDonnees.setUp">
+<span class="sig-name descname"><span class="pre">setUp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestChargementDonnees.setUp" title="Link to this definition">¶</a></dt>
+<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestChargementDonnees.test_cas_FT_uniques_detectes">
+<span class="sig-name descname"><span class="pre">test_cas_FT_uniques_detectes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestChargementDonnees.test_cas_FT_uniques_detectes" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestChargementDonnees.test_chargement_retourne_dataframe">
+<span class="sig-name descname"><span class="pre">test_chargement_retourne_dataframe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestChargementDonnees.test_chargement_retourne_dataframe" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestChargementDonnees.test_colonnes_requises_presentes">
+<span class="sig-name descname"><span class="pre">test_colonnes_requises_presentes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestChargementDonnees.test_colonnes_requises_presentes" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestChargementDonnees.test_coordonnees_dans_plage_geometrique">
+<span class="sig-name descname"><span class="pre">test_coordonnees_dans_plage_geometrique</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestChargementDonnees.test_coordonnees_dans_plage_geometrique" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestChargementDonnees.test_forces_positives">
+<span class="sig-name descname"><span class="pre">test_forces_positives</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestChargementDonnees.test_forces_positives" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestChargementDonnees.test_pas_de_nan_dans_features">
+<span class="sig-name descname"><span class="pre">test_pas_de_nan_dans_features</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestChargementDonnees.test_pas_de_nan_dans_features" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestChargementDonnees.test_von_mises_positif">
+<span class="sig-name descname"><span class="pre">test_von_mises_positif</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestChargementDonnees.test_von_mises_positif" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.test_ml.TestEntrainement">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">tests.test_ml.</span></span><span class="sig-name descname"><span class="pre">TestEntrainement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestEntrainement" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestEntrainement.setUpClass">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">setUpClass</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestEntrainement.setUpClass" title="Link to this definition">¶</a></dt>
+<dd><p>Hook method for setting up class fixture before running tests in the class.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestEntrainement.test_flag_entraine_actif">
+<span class="sig-name descname"><span class="pre">test_flag_entraine_actif</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestEntrainement.test_flag_entraine_actif" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestEntrainement.test_modeles_tous_entraines">
+<span class="sig-name descname"><span class="pre">test_modeles_tous_entraines</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestEntrainement.test_modeles_tous_entraines" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestEntrainement.test_predire_sans_entrainement_leve_erreur">
+<span class="sig-name descname"><span class="pre">test_predire_sans_entrainement_leve_erreur</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestEntrainement.test_predire_sans_entrainement_leve_erreur" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.test_ml.TestExtractionNomFichier">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">tests.test_ml.</span></span><span class="sig-name descname"><span class="pre">TestExtractionNomFichier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestExtractionNomFichier" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestExtractionNomFichier.test_format_grand_nombre">
+<span class="sig-name descname"><span class="pre">test_format_grand_nombre</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestExtractionNomFichier.test_format_grand_nombre" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestExtractionNomFichier.test_format_invalide">
+<span class="sig-name descname"><span class="pre">test_format_invalide</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestExtractionNomFichier.test_format_invalide" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestExtractionNomFichier.test_format_standard">
+<span class="sig-name descname"><span class="pre">test_format_standard</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestExtractionNomFichier.test_format_standard" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestExtractionNomFichier.test_tous_types_fichiers">
+<span class="sig-name descname"><span class="pre">test_tous_types_fichiers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestExtractionNomFichier.test_tous_types_fichiers" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.test_ml.TestImportanceFeatures">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">tests.test_ml.</span></span><span class="sig-name descname"><span class="pre">TestImportanceFeatures</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestImportanceFeatures" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestImportanceFeatures.setUpClass">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">setUpClass</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestImportanceFeatures.setUpClass" title="Link to this definition">¶</a></dt>
+<dd><p>Hook method for setting up class fixture before running tests in the class.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestImportanceFeatures.test_X_feature_importante_pour_contrainte">
+<span class="sig-name descname"><span class="pre">test_X_feature_importante_pour_contrainte</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestImportanceFeatures.test_X_feature_importante_pour_contrainte" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestImportanceFeatures.test_force_importante_pour_deplacement">
+<span class="sig-name descname"><span class="pre">test_force_importante_pour_deplacement</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestImportanceFeatures.test_force_importante_pour_deplacement" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestImportanceFeatures.test_importances_pour_toutes_cibles">
+<span class="sig-name descname"><span class="pre">test_importances_pour_toutes_cibles</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestImportanceFeatures.test_importances_pour_toutes_cibles" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestImportanceFeatures.test_somme_importances_egale_1">
+<span class="sig-name descname"><span class="pre">test_somme_importances_egale_1</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestImportanceFeatures.test_somme_importances_egale_1" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.test_ml.TestIntegrationML">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">tests.test_ml.</span></span><span class="sig-name descname"><span class="pre">TestIntegrationML</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestIntegrationML" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestIntegrationML.setUpClass">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">setUpClass</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestIntegrationML.setUpClass" title="Link to this definition">¶</a></dt>
+<dd><p>Hook method for setting up class fixture before running tests in the class.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestIntegrationML.test_monotonie_force">
+<span class="sig-name descname"><span class="pre">test_monotonie_force</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestIntegrationML.test_monotonie_force" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestIntegrationML.test_pipeline_complet_avec_donnees_reelles">
+<span class="sig-name descname"><span class="pre">test_pipeline_complet_avec_donnees_reelles</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestIntegrationML.test_pipeline_complet_avec_donnees_reelles" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.test_ml.TestPrediction">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">tests.test_ml.</span></span><span class="sig-name descname"><span class="pre">TestPrediction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestPrediction" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestPrediction.setUpClass">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">setUpClass</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestPrediction.setUpClass" title="Link to this definition">¶</a></dt>
+<dd><p>Hook method for setting up class fixture before running tests in the class.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestPrediction.test_deplacement_negatif_en_bout">
+<span class="sig-name descname"><span class="pre">test_deplacement_negatif_en_bout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestPrediction.test_deplacement_negatif_en_bout" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestPrediction.test_fleche_independante_de_temperature">
+<span class="sig-name descname"><span class="pre">test_fleche_independante_de_temperature</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestPrediction.test_fleche_independante_de_temperature" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestPrediction.test_force_plus_grande_donne_fleche_plus_grande">
+<span class="sig-name descname"><span class="pre">test_force_plus_grande_donne_fleche_plus_grande</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestPrediction.test_force_plus_grande_donne_fleche_plus_grande" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestPrediction.test_force_plus_grande_donne_vm_plus_grande">
+<span class="sig-name descname"><span class="pre">test_force_plus_grande_donne_vm_plus_grande</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestPrediction.test_force_plus_grande_donne_vm_plus_grande" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestPrediction.test_pas_de_nan_dans_predictions">
+<span class="sig-name descname"><span class="pre">test_pas_de_nan_dans_predictions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestPrediction.test_pas_de_nan_dans_predictions" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestPrediction.test_shape_sortie_correcte">
+<span class="sig-name descname"><span class="pre">test_shape_sortie_correcte</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestPrediction.test_shape_sortie_correcte" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestPrediction.test_temperature_plus_haute_donne_vm_plus_grande">
+<span class="sig-name descname"><span class="pre">test_temperature_plus_haute_donne_vm_plus_grande</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestPrediction.test_temperature_plus_haute_donne_vm_plus_grande" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestPrediction.test_von_mises_toujours_positif">
+<span class="sig-name descname"><span class="pre">test_von_mises_toujours_positif</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestPrediction.test_von_mises_toujours_positif" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.test_ml.TestSaintVenant">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">tests.test_ml.</span></span><span class="sig-name descname"><span class="pre">TestSaintVenant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestSaintVenant" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestSaintVenant.setUpClass">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">setUpClass</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestSaintVenant.setUpClass" title="Link to this definition">¶</a></dt>
+<dd><p>Hook method for setting up class fixture before running tests in the class.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestSaintVenant.test_filtre_ne_vide_pas_le_dataframe">
+<span class="sig-name descname"><span class="pre">test_filtre_ne_vide_pas_le_dataframe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestSaintVenant.test_filtre_ne_vide_pas_le_dataframe" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestSaintVenant.test_noeuds_encastrement_exclus">
+<span class="sig-name descname"><span class="pre">test_noeuds_encastrement_exclus</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestSaintVenant.test_noeuds_encastrement_exclus" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestSaintVenant.test_seuils_dans_config">
+<span class="sig-name descname"><span class="pre">test_seuils_dans_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestSaintVenant.test_seuils_dans_config" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.test_ml.TestValidationKFold">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">tests.test_ml.</span></span><span class="sig-name descname"><span class="pre">TestValidationKFold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestValidationKFold" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestValidationKFold.setUpClass">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">setUpClass</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestValidationKFold.setUpClass" title="Link to this definition">¶</a></dt>
+<dd><p>Hook method for setting up class fixture before running tests in the class.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestValidationKFold.test_ecart_type_stable">
+<span class="sig-name descname"><span class="pre">test_ecart_type_stable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestValidationKFold.test_ecart_type_stable" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestValidationKFold.test_nb_scores_egal_k">
+<span class="sig-name descname"><span class="pre">test_nb_scores_egal_k</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestValidationKFold.test_nb_scores_egal_k" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestValidationKFold.test_r2_contrainte_x_acceptable">
+<span class="sig-name descname"><span class="pre">test_r2_contrainte_x_acceptable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestValidationKFold.test_r2_contrainte_x_acceptable" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestValidationKFold.test_r2_deplacement_acceptable">
+<span class="sig-name descname"><span class="pre">test_r2_deplacement_acceptable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestValidationKFold.test_r2_deplacement_acceptable" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestValidationKFold.test_r2_von_mises_acceptable">
+<span class="sig-name descname"><span class="pre">test_r2_von_mises_acceptable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestValidationKFold.test_r2_von_mises_acceptable" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_ml.TestValidationKFold.test_scores_calcules_pour_toutes_cibles">
+<span class="sig-name descname"><span class="pre">test_scores_calcules_pour_toutes_cibles</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.TestValidationKFold.test_scores_calcules_pour_toutes_cibles" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.test_ml.charger_cfg">
+<span class="sig-prename descclassname"><span class="pre">tests.test_ml.</span></span><span class="sig-name descname"><span class="pre">charger_cfg</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_ml.charger_cfg" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.test_ml.creer_df_minimal">
+<span class="sig-prename descclassname"><span class="pre">tests.test_ml.</span></span><span class="sig-name descname"><span class="pre">creer_df_minimal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#tests.test_ml.creer_df_minimal" title="Link to this definition">¶</a></dt>
+<dd><p>DataFrame synthétique minimal pour tests rapides.</p>
+</dd></dl>
+
+</section>
+<section id="module-tests.test_systeme">
+<span id="tests-test-systeme-module"></span><h2>tests.test_systeme module<a class="headerlink" href="#module-tests.test_systeme" title="Link to this heading">¶</a></h2>
+<section id="test-systeme-py">
+<h3>test_systeme.py<a class="headerlink" href="#test-systeme-py" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>Tests unitaires et d’intégration pour les modules système :</dt><dd><ul class="simple">
+<li><p>solveur_analytique.py  (Euler-Bernoulli)</p></li>
+<li><p>solveur_ef.py          (FEA 1D)</p></li>
+<li><p>Cohérence Analytique vs FEA</p></li>
+<li><p>Principe de Saint-Venant</p></li>
+<li><p>Config YAML</p></li>
+</ul>
+</dd>
+<dt>Lancement :</dt><dd><p>pytest tests/test_systeme.py -v</p>
+</dd>
+</dl>
+</section>
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.test_systeme.TestCoherenceAnalytiqueVsEF">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">tests.test_systeme.</span></span><span class="sig-name descname"><span class="pre">TestCoherenceAnalytiqueVsEF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestCoherenceAnalytiqueVsEF" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestCoherenceAnalytiqueVsEF.setUpClass">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">setUpClass</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestCoherenceAnalytiqueVsEF.setUpClass" title="Link to this definition">¶</a></dt>
+<dd><p>Hook method for setting up class fixture before running tests in the class.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestCoherenceAnalytiqueVsEF.test_contrainte_thermique_identique">
+<span class="sig-name descname"><span class="pre">test_contrainte_thermique_identique</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestCoherenceAnalytiqueVsEF.test_contrainte_thermique_identique" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestCoherenceAnalytiqueVsEF.test_contrainte_x_accord">
+<span class="sig-name descname"><span class="pre">test_contrainte_x_accord</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestCoherenceAnalytiqueVsEF.test_contrainte_x_accord" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestCoherenceAnalytiqueVsEF.test_fleche_max_accord">
+<span class="sig-name descname"><span class="pre">test_fleche_max_accord</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestCoherenceAnalytiqueVsEF.test_fleche_max_accord" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestCoherenceAnalytiqueVsEF.test_linearite_force_coherente">
+<span class="sig-name descname"><span class="pre">test_linearite_force_coherente</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestCoherenceAnalytiqueVsEF.test_linearite_force_coherente" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestCoherenceAnalytiqueVsEF.test_plusieurs_temperatures">
+<span class="sig-name descname"><span class="pre">test_plusieurs_temperatures</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestCoherenceAnalytiqueVsEF.test_plusieurs_temperatures" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestCoherenceAnalytiqueVsEF.test_von_mises_accord">
+<span class="sig-name descname"><span class="pre">test_von_mises_accord</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestCoherenceAnalytiqueVsEF.test_von_mises_accord" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.test_systeme.TestConfiguration">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">tests.test_systeme.</span></span><span class="sig-name descname"><span class="pre">TestConfiguration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestConfiguration" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestConfiguration.setUp">
+<span class="sig-name descname"><span class="pre">setUp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestConfiguration.setUp" title="Link to this definition">¶</a></dt>
+<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestConfiguration.test_alpha_est_float">
+<span class="sig-name descname"><span class="pre">test_alpha_est_float</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestConfiguration.test_alpha_est_float" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestConfiguration.test_dimensions_poutre_carree">
+<span class="sig-name descname"><span class="pre">test_dimensions_poutre_carree</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestConfiguration.test_dimensions_poutre_carree" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestConfiguration.test_fichier_yaml_lisible">
+<span class="sig-name descname"><span class="pre">test_fichier_yaml_lisible</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestConfiguration.test_fichier_yaml_lisible" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestConfiguration.test_geometrie_positive">
+<span class="sig-name descname"><span class="pre">test_geometrie_positive</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestConfiguration.test_geometrie_positive" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestConfiguration.test_module_young_est_float">
+<span class="sig-name descname"><span class="pre">test_module_young_est_float</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestConfiguration.test_module_young_est_float" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestConfiguration.test_nb_elements_positif">
+<span class="sig-name descname"><span class="pre">test_nb_elements_positif</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestConfiguration.test_nb_elements_positif" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestConfiguration.test_saint_venant_coherent">
+<span class="sig-name descname"><span class="pre">test_saint_venant_coherent</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestConfiguration.test_saint_venant_coherent" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestConfiguration.test_sections_obligatoires_presentes">
+<span class="sig-name descname"><span class="pre">test_sections_obligatoires_presentes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestConfiguration.test_sections_obligatoires_presentes" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.test_systeme.TestPhysiqueGenerale">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">tests.test_systeme.</span></span><span class="sig-name descname"><span class="pre">TestPhysiqueGenerale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestPhysiqueGenerale" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestPhysiqueGenerale.setUpClass">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">setUpClass</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestPhysiqueGenerale.setUpClass" title="Link to this definition">¶</a></dt>
+<dd><p>Hook method for setting up class fixture before running tests in the class.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestPhysiqueGenerale.test_cas_limite_force_nulle">
+<span class="sig-name descname"><span class="pre">test_cas_limite_force_nulle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestPhysiqueGenerale.test_cas_limite_force_nulle" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestPhysiqueGenerale.test_cas_limite_temperature_ref">
+<span class="sig-name descname"><span class="pre">test_cas_limite_temperature_ref</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestPhysiqueGenerale.test_cas_limite_temperature_ref" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestPhysiqueGenerale.test_rigidite_matrice_definie_positive">
+<span class="sig-name descname"><span class="pre">test_rigidite_matrice_definie_positive</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestPhysiqueGenerale.test_rigidite_matrice_definie_positive" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestPhysiqueGenerale.test_rigidite_matrice_symetrique">
+<span class="sig-name descname"><span class="pre">test_rigidite_matrice_symetrique</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestPhysiqueGenerale.test_rigidite_matrice_symetrique" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestPhysiqueGenerale.test_superposition_charge_et_thermique">
+<span class="sig-name descname"><span class="pre">test_superposition_charge_et_thermique</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestPhysiqueGenerale.test_superposition_charge_et_thermique" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestPhysiqueGenerale.test_valeurs_acier_realistes">
+<span class="sig-name descname"><span class="pre">test_valeurs_acier_realistes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestPhysiqueGenerale.test_valeurs_acier_realistes" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.test_systeme.TestSolveurAnalytique">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">tests.test_systeme.</span></span><span class="sig-name descname"><span class="pre">TestSolveurAnalytique</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestSolveurAnalytique" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestSolveurAnalytique.setUpClass">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">setUpClass</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestSolveurAnalytique.setUpClass" title="Link to this definition">¶</a></dt>
+<dd><p>Hook method for setting up class fixture before running tests in the class.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestSolveurAnalytique.test_aire_section">
+<span class="sig-name descname"><span class="pre">test_aire_section</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestSolveurAnalytique.test_aire_section" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestSolveurAnalytique.test_contrainte_flex_formule">
+<span class="sig-name descname"><span class="pre">test_contrainte_flex_formule</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestSolveurAnalytique.test_contrainte_flex_formule" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestSolveurAnalytique.test_contrainte_flex_positive">
+<span class="sig-name descname"><span class="pre">test_contrainte_flex_positive</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestSolveurAnalytique.test_contrainte_flex_positive" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestSolveurAnalytique.test_contrainte_flex_proportionnelle_a_F">
+<span class="sig-name descname"><span class="pre">test_contrainte_flex_proportionnelle_a_F</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestSolveurAnalytique.test_contrainte_flex_proportionnelle_a_F" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestSolveurAnalytique.test_contrainte_thermique_formule">
+<span class="sig-name descname"><span class="pre">test_contrainte_thermique_formule</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestSolveurAnalytique.test_contrainte_thermique_formule" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestSolveurAnalytique.test_contrainte_thermique_nulle_a_T_ref">
+<span class="sig-name descname"><span class="pre">test_contrainte_thermique_nulle_a_T_ref</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestSolveurAnalytique.test_contrainte_thermique_nulle_a_T_ref" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestSolveurAnalytique.test_contrainte_thermique_proportionnelle_a_deltaT">
+<span class="sig-name descname"><span class="pre">test_contrainte_thermique_proportionnelle_a_deltaT</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestSolveurAnalytique.test_contrainte_thermique_proportionnelle_a_deltaT" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestSolveurAnalytique.test_fleche_formule">
+<span class="sig-name descname"><span class="pre">test_fleche_formule</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestSolveurAnalytique.test_fleche_formule" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestSolveurAnalytique.test_fleche_independante_de_T">
+<span class="sig-name descname"><span class="pre">test_fleche_independante_de_T</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestSolveurAnalytique.test_fleche_independante_de_T" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestSolveurAnalytique.test_fleche_nulle_sans_force">
+<span class="sig-name descname"><span class="pre">test_fleche_nulle_sans_force</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestSolveurAnalytique.test_fleche_nulle_sans_force" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestSolveurAnalytique.test_fleche_positive">
+<span class="sig-name descname"><span class="pre">test_fleche_positive</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestSolveurAnalytique.test_fleche_positive" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestSolveurAnalytique.test_fleche_proportionnelle_a_F">
+<span class="sig-name descname"><span class="pre">test_fleche_proportionnelle_a_F</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestSolveurAnalytique.test_fleche_proportionnelle_a_F" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestSolveurAnalytique.test_moment_quadratique">
+<span class="sig-name descname"><span class="pre">test_moment_quadratique</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestSolveurAnalytique.test_moment_quadratique" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestSolveurAnalytique.test_profil_fleche_monotone">
+<span class="sig-name descname"><span class="pre">test_profil_fleche_monotone</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestSolveurAnalytique.test_profil_fleche_monotone" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestSolveurAnalytique.test_toutes_cles_presentes">
+<span class="sig-name descname"><span class="pre">test_toutes_cles_presentes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestSolveurAnalytique.test_toutes_cles_presentes" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestSolveurAnalytique.test_valeurs_physiquement_raisonnables">
+<span class="sig-name descname"><span class="pre">test_valeurs_physiquement_raisonnables</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestSolveurAnalytique.test_valeurs_physiquement_raisonnables" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestSolveurAnalytique.test_von_mises_egal_abs_sigma_x">
+<span class="sig-name descname"><span class="pre">test_von_mises_egal_abs_sigma_x</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestSolveurAnalytique.test_von_mises_egal_abs_sigma_x" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestSolveurAnalytique.test_von_mises_positif">
+<span class="sig-name descname"><span class="pre">test_von_mises_positif</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestSolveurAnalytique.test_von_mises_positif" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.test_systeme.TestSolveurEF">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">tests.test_systeme.</span></span><span class="sig-name descname"><span class="pre">TestSolveurEF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestSolveurEF" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestSolveurEF.setUpClass">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">setUpClass</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestSolveurEF.setUpClass" title="Link to this definition">¶</a></dt>
+<dd><p>Hook method for setting up class fixture before running tests in the class.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestSolveurEF.test_contrainte_thermique">
+<span class="sig-name descname"><span class="pre">test_contrainte_thermique</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestSolveurEF.test_contrainte_thermique" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestSolveurEF.test_deplacement_nul_a_encastrement">
+<span class="sig-name descname"><span class="pre">test_deplacement_nul_a_encastrement</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestSolveurEF.test_deplacement_nul_a_encastrement" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestSolveurEF.test_fleche_positive">
+<span class="sig-name descname"><span class="pre">test_fleche_positive</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestSolveurEF.test_fleche_positive" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestSolveurEF.test_moment_max_a_encastrement">
+<span class="sig-name descname"><span class="pre">test_moment_max_a_encastrement</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestSolveurEF.test_moment_max_a_encastrement" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestSolveurEF.test_moment_nul_en_bout_libre">
+<span class="sig-name descname"><span class="pre">test_moment_nul_en_bout_libre</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestSolveurEF.test_moment_nul_en_bout_libre" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestSolveurEF.test_nb_ddl">
+<span class="sig-name descname"><span class="pre">test_nb_ddl</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestSolveurEF.test_nb_ddl" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestSolveurEF.test_nb_noeuds">
+<span class="sig-name descname"><span class="pre">test_nb_noeuds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestSolveurEF.test_nb_noeuds" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestSolveurEF.test_positions_x_correctes">
+<span class="sig-name descname"><span class="pre">test_positions_x_correctes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestSolveurEF.test_positions_x_correctes" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestSolveurEF.test_profil_fleche_monotone">
+<span class="sig-name descname"><span class="pre">test_profil_fleche_monotone</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestSolveurEF.test_profil_fleche_monotone" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestSolveurEF.test_rotation_nulle_a_encastrement">
+<span class="sig-name descname"><span class="pre">test_rotation_nulle_a_encastrement</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestSolveurEF.test_rotation_nulle_a_encastrement" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestSolveurEF.test_toutes_cles_presentes">
+<span class="sig-name descname"><span class="pre">test_toutes_cles_presentes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestSolveurEF.test_toutes_cles_presentes" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestSolveurEF.test_vecteur_U_bonne_taille">
+<span class="sig-name descname"><span class="pre">test_vecteur_U_bonne_taille</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestSolveurEF.test_vecteur_U_bonne_taille" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_systeme.TestSolveurEF.test_von_mises_positif">
+<span class="sig-name descname"><span class="pre">test_von_mises_positif</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.TestSolveurEF.test_von_mises_positif" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.test_systeme.charger_cfg">
+<span class="sig-prename descclassname"><span class="pre">tests.test_systeme.</span></span><span class="sig-name descname"><span class="pre">charger_cfg</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_systeme.charger_cfg" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-tests">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-tests" title="Link to this heading">¶</a></h2>
+<p>Package contenant les tests.</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Projet_Session_Equipe_1</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Projet de fin de session</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="solveurs.html">solveurs package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">tests package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main.html">main module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="app.html">app module</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">Projet de fin de session</a><ul>
+      <li>Previous: <a href="solveurs.html" title="previous chapter">solveurs package</a></li>
+      <li>Next: <a href="main.html" title="next chapter">main module</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2026, Mohammad Shohoudimojdehi et Nicolas Allard.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/tests.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

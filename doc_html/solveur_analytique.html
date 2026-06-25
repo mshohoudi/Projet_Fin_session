@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>solveur_analytique module &#8212; Projet_Session_Equipe_1  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-solveur_analytique">
+<span id="solveur-analytique-module"></span><h1>solveur_analytique module<a class="headerlink" href="#module-solveur_analytique" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="solveur_analytique.SolveurAnalytique">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">solveur_analytique.</span></span><span class="sig-name descname"><span class="pre">SolveurAnalytique</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#solveur_analytique.SolveurAnalytique" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Résolution analytique thermoélastique d’une poutre encastrée-libre
+soumise à une charge ponctuelle en bout et un gradient de température.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="solveur_analytique.SolveurAnalytique.contrainte_flexion_max">
+<span class="sig-name descname"><span class="pre">contrainte_flexion_max</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">F</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#solveur_analytique.SolveurAnalytique.contrainte_flexion_max" title="Link to this definition">¶</a></dt>
+<dd><p>Contrainte de flexion maximale à l’encastrement (x = 0), fibre extrême.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="solveur_analytique.SolveurAnalytique.contrainte_thermique">
+<span class="sig-name descname"><span class="pre">contrainte_thermique</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#solveur_analytique.SolveurAnalytique.contrainte_thermique" title="Link to this definition">¶</a></dt>
+<dd><p>Contrainte thermique axiale (telle que testée et validée avec Ansys).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="solveur_analytique.SolveurAnalytique.contrainte_x_en_section">
+<span class="sig-name descname"><span class="pre">contrainte_x_en_section</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">F</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#solveur_analytique.SolveurAnalytique.contrainte_x_en_section" title="Link to this definition">¶</a></dt>
+<dd><p>Contrainte normale σ_x en une section x, pour un tableau d’ordonnées y.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="solveur_analytique.SolveurAnalytique.fleche_en_x">
+<span class="sig-name descname"><span class="pre">fleche_en_x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">F</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#solveur_analytique.SolveurAnalytique.fleche_en_x" title="Link to this definition">¶</a></dt>
+<dd><p>Profil de flèche le long de la poutre.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="solveur_analytique.SolveurAnalytique.fleche_max">
+<span class="sig-name descname"><span class="pre">fleche_max</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">F</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#solveur_analytique.SolveurAnalytique.fleche_max" title="Link to this definition">¶</a></dt>
+<dd><p>Flèche maximale à l’extrémité libre (x = L).
+v_max = F * L³ / (3 * E * I)   [m]</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="solveur_analytique.SolveurAnalytique.resoudre">
+<span class="sig-name descname"><span class="pre">resoudre</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">F</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#solveur_analytique.SolveurAnalytique.resoudre" title="Link to this definition">¶</a></dt>
+<dd><p>Retourne un dictionnaire de tous les résultats analytiques clés.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="solveur_analytique.SolveurAnalytique.von_mises_max">
+<span class="sig-name descname"><span class="pre">von_mises_max</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">F</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#solveur_analytique.SolveurAnalytique.von_mises_max" title="Link to this definition">¶</a></dt>
+<dd><p>Contrainte Von Mises approximée (poutre mince, σ_y ≈ 0, τ ≈ 0).</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Projet_Session_Equipe_1</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2026, Mohammad Shohoudimojdehi et Nicolas Allard.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/solveur_analytique.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
