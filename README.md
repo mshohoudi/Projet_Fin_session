@@ -147,7 +147,14 @@ pytest
 | `test_ml.py` | Parsing des noms de fichiers, chargement des données, scores K-Fold, monotonie des prédictions, filtre de Saint-Venant, importance des variables |
 
 ---
+## 📚 Documentation Officielle (Sphinx)
 
+Le code source de ce projet est entièrement documenté. Une documentation interactive générée automatiquement avec **Sphinx** est incluse dans ce dépôt.
+
+Pour consulter les détails des modules, classes et fonctions :
+1. Naviguez vers le dossier de documentation (par exemple : `docs/_build/html/`).
+2. Ouvrez le fichier `index.html` avec votre navigateur web préféré (Chrome, Edge, Safari, etc.).
+---
 ## 👨‍💻 Auteurs
 
 - **Mohammad Shohoudimojdehi**
