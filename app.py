@@ -70,20 +70,52 @@ st.markdown("""
 
 @st.cache_resource(show_spinner=False)
 def charger_config():
-    """Charge le fichier de configuration YAML."""
+    """
+    Charge le fichier de configuration YAML.
+
+    Le fichier contient les propriétés géométriques, matérielles,
+    numériques ainsi que les paramètres du modèle d'apprentissage.
+
+    :return: Dictionnaire contenant la configuration du projet.
+    :rtype: dict
+    """
     with open(os.path.join(_ROOT, "config.yaml"), encoding="utf-8") as f:
         return yaml.safe_load(f)
 
 
 @st.cache_resource(show_spinner=False)
 def charger_donnees(cfg):
-    """Charge les données Ansys (ou génère le fallback synthétique)."""
+    """
+    Charge les données d'entraînement.
+
+    Les données sont importées depuis les simulations Ansys ou générées
+    automatiquement lorsqu'aucun fichier n'est disponible.
+
+    :param cfg: Dictionnaire de configuration.
+    :type cfg: dict
+
+    :return: Jeu de données utilisé pour l'entraînement du modèle.
+    :rtype: pandas.DataFrame
+    """
     return charger_ou_generer_donnees(cfg)
 
 
 @st.cache_resource(show_spinner=False)
 def entrainer_modele(_df, cfg):
-    """Initialise, valide et entraîne le modèle Random Forest."""
+    """
+    Initialise, valide et entraîne le modèle de substitution.
+
+    Une validation croisée K-Fold est réalisée avant l'entraînement
+    final sur l'ensemble des données.
+
+    :param _df: Jeu de données d'entraînement.
+    :type _df: pandas.DataFrame
+    :param cfg: Dictionnaire de configuration.
+    :type cfg: dict
+
+    :return: Modèle de substitution entraîné.
+    :rtype: ModeleSubstitution
+    """
     modele = ModeleSubstitution(cfg)
     modele.valider(_df)
     modele.entrainer(_df)
@@ -91,7 +123,18 @@ def entrainer_modele(_df, cfg):
 
 
 def generer_grille(cfg) -> pd.DataFrame:
-    """Génère la grille 3D des noeuds pour les prédictions ML."""
+    """
+    Génère la grille tridimensionnelle utilisée pour les prédictions ML.
+
+    Les coordonnées sont créées à partir de la géométrie de la poutre
+    afin de produire un ensemble régulier de points dans le volume.
+
+    :param cfg: Dictionnaire de configuration.
+    :type cfg: dict
+
+    :return: DataFrame contenant les coordonnées des nœuds.
+    :rtype: pandas.DataFrame
+    """
     L = cfg["geometrie"]["longueur"]
     h = cfg["geometrie"]["hauteur"]
     b = cfg["geometrie"]["base"]
@@ -107,7 +150,19 @@ def generer_grille(cfg) -> pd.DataFrame:
 # ════════════════════════════════════════════════════════════════
 
 def sidebar(cfg):
-    """Gère l'affichage et les entrées utilisateur dans la barre latérale."""
+    """
+    Construit la barre latérale de l'application Streamlit.
+
+    La barre latérale permet d'afficher les caractéristiques de la
+    poutre et de définir les conditions de chargement utilisées pour
+    les calculs.
+
+    :param cfg: Dictionnaire de configuration.
+    :type cfg: dict
+
+    :return: Force appliquée [N] et température [°C].
+    :rtype: tuple[float, float]
+    """
     st.sidebar.image("https://upload.wikimedia.org/wikipedia/commons/2/2a/Ets_quebec_logo.png",
                      use_container_width=True, output_format="auto")
 
@@ -167,7 +222,28 @@ def sidebar(cfg):
 # ════════════════════════════════════════════════════════════════
 
 def fig_comparaison_barres(res_ana, res_ef, res_ml, F, T):
-    """Génère les barres comparatives : flèche max et Von Mises max."""
+    """
+    Génère les graphiques comparant les résultats des trois méthodes.
+
+    Deux diagrammes sont créés :
+
+    - comparaison de la flèche maximale;
+    - comparaison de la contrainte maximale de Von Mises.
+
+    :param res_ana: Résultats du solveur analytique.
+    :type res_ana: dict
+    :param res_ef: Résultats du solveur EF.
+    :type res_ef: dict
+    :param res_ml: Résultats du modèle ML.
+    :type res_ml: dict
+    :param F: Force appliquée [N].
+    :type F: float
+    :param T: Température appliquée [°C].
+    :type T: float
+
+    :return: Figure Plotly.
+    :rtype: plotly.graph_objects.Figure
+    """
     methodes = ["Analytique", "FEA 1D", "ML 3D"]
     couleurs = ["#007bff", "#28a745", "#fd7e14"]
 
@@ -211,7 +287,28 @@ def fig_comparaison_barres(res_ana, res_ef, res_ml, F, T):
 
 
 def fig_profil_fleche(res_ef, res_ana, res_ml, F, T, L):
-    """Trace le profil de la flèche v(x) le long de la poutre."""
+    """
+    Génère le profil de flèche le long de la poutre.
+
+    Les résultats analytiques, EF et ML sont représentés sur un même
+    graphique.
+
+    :param res_ef: Résultats du solveur EF.
+    :type res_ef: dict
+    :param res_ana: Résultats du solveur analytique.
+    :type res_ana: dict
+    :param res_ml: Résultats du modèle ML.
+    :type res_ml: dict
+    :param F: Force appliquée [N].
+    :type F: float
+    :param T: Température appliquée [°C].
+    :type T: float
+    :param L: Longueur de la poutre [m].
+    :type L: float
+
+    :return: Figure Plotly.
+    :rtype: plotly.graph_objects.Figure
+    """
     x = np.linspace(0, L, 200)
     E = res_ana.get("_E");
     I = res_ana.get("_I")
@@ -245,7 +342,26 @@ def fig_profil_fleche(res_ef, res_ana, res_ml, F, T, L):
 
 
 def fig_profil_contrainte(res_ef, res_ml, F, T, L):
-    """Trace le profil de contrainte normale σ_x (fibre supérieure)."""
+    """
+    Génère le profil de la contrainte normale selon l'axe X.
+
+    Le graphique compare la distribution obtenue par le solveur EF avec
+    la valeur maximale prédite par le modèle ML.
+
+    :param res_ef: Résultats du solveur EF.
+    :type res_ef: dict
+    :param res_ml: Résultats du modèle ML.
+    :type res_ml: dict
+    :param F: Force appliquée [N].
+    :type F: float
+    :param T: Température appliquée [°C].
+    :type T: float
+    :param L: Longueur de la poutre [m].
+    :type L: float
+
+    :return: Figure Plotly.
+    :rtype: plotly.graph_objects.Figure
+    """
     x_ef = res_ef.get("positions_x", [])
     sig_ef_x = res_ef.get("contrainte_flex_x", [])
     sig_th = res_ef.get("contrainte_thermique_Pa", 0)
@@ -276,7 +392,27 @@ def fig_profil_contrainte(res_ef, res_ml, F, T, L):
 
 
 def fig_heatmap_3d(df_pred, cible, F, T, label, unite):
-    """Génère un nuage de points 3D coloré (Cartographie ML)."""
+    """
+    Génère une cartographie tridimensionnelle des prédictions ML.
+
+    Chaque point est coloré selon la valeur de la grandeur sélectionnée.
+
+    :param df_pred: Résultats prédits sur la grille.
+    :type df_pred: pandas.DataFrame
+    :param cible: Nom de la variable à représenter.
+    :type cible: str
+    :param F: Force appliquée [N].
+    :type F: float
+    :param T: Température appliquée [°C].
+    :type T: float
+    :param label: Nom affiché dans la barre de couleurs.
+    :type label: str
+    :param unite: Unité de la grandeur.
+    :type unite: str
+
+    :return: Figure Plotly ou ``None`` si la variable est absente.
+    :rtype: plotly.graph_objects.Figure or None
+    """
     if cible not in df_pred.columns:
         return None
 
@@ -305,7 +441,15 @@ def fig_heatmap_3d(df_pred, cible, F, T, label, unite):
 
 
 def fig_importance_features(importances):
-    """Affiche l'importance des variables calculée par le Random Forest."""
+    """
+    Génère le graphique d'importance des variables du modèle Random Forest.
+
+    :param importances: Importance des variables d'entrée.
+    :type importances: dict
+
+    :return: Figure Plotly.
+    :rtype: plotly.graph_objects.Figure
+    """
     labels_map = {"von_mises": "Von Mises", "contrainte_x": "Contrainte X", "deplacement_y": "Déplacement Y"}
     couleurs = {"von_mises": "#007bff", "contrainte_x": "#28a745", "deplacement_y": "#fd7e14"}
 
@@ -329,7 +473,18 @@ def fig_importance_features(importances):
 
 
 def fig_scores_kfold(scores_cv):
-    """Affiche les scores R² obtenus lors de la validation croisée."""
+    """
+    Génère le graphique des scores de validation croisée.
+
+    Les scores moyens et leurs écarts-types sont affichés sous forme de
+    diagramme en barres.
+
+    :param scores_cv: Résultats de la validation croisée.
+    :type scores_cv: dict
+
+    :return: Figure Plotly.
+    :rtype: plotly.graph_objects.Figure
+    """
     labels_map = {"von_mises": "Von Mises", "contrainte_x": "Contrainte X", "deplacement_y": "Déplacement Y"}
     cibles = list(scores_cv.keys())
     moyennes = [scores_cv[c]["mean"] for c in cibles]
@@ -354,8 +509,21 @@ def fig_scores_kfold(scores_cv):
 
 def fig_extrapolation_force(modele, cfg, T_fixe):
     """
-    Génère un graphique démontrant le comportement du modèle ML vs le modèle Analytique
-    en dehors de son domaine d'entraînement (Extrapolation de la Force).
+    Illustre le comportement du modèle hors de son domaine
+    d'entraînement.
+
+    Les prédictions du modèle ML sont comparées à la solution
+    analytique pour une large plage de forces.
+
+    :param modele: Modèle de substitution entraîné.
+    :type modele: ModeleSubstitution
+    :param cfg: Dictionnaire de configuration.
+    :type cfg: dict
+    :param T_fixe: Température maintenue constante [°C].
+    :type T_fixe: float
+
+    :return: Figure Plotly.
+    :rtype: plotly.graph_objects.Figure
     """
     forces_kN = np.linspace(0, 100, 21)
     forces_N = forces_kN * 1000
@@ -408,7 +576,22 @@ def fig_extrapolation_force(modele, cfg, T_fixe):
 # ════════════════════════════════════════════════════════════════
 
 def afficher_metriques(res_ana, res_ef, res_ml):
-    """Affiche les résultats numériques sous forme de cartes (3 colonnes)."""
+    """
+    Affiche les résultats numériques sous forme de métriques Streamlit.
+
+    Les valeurs calculées sont présentées pour les trois méthodes de
+    résolution ainsi que les écarts relatifs entre celles-ci.
+
+    :param res_ana: Résultats du solveur analytique.
+    :type res_ana: dict
+    :param res_ef: Résultats du solveur EF.
+    :type res_ef: dict
+    :param res_ml: Résultats du modèle ML.
+    :type res_ml: dict
+
+    :return: Aucun retour.
+    :rtype: None
+    """
     # Unités correctement gérées (mm et MPa)
     v_ana = res_ana["fleche_max_m"] * 1e3
     v_ef = res_ef["fleche_max_m"] * 1e3
@@ -459,6 +642,17 @@ def afficher_metriques(res_ana, res_ef, res_ml):
 # ════════════════════════════════════════════════════════════════
 
 def main():
+    """
+    Exécute l'application Streamlit.
+
+    Cette fonction coordonne le chargement de la configuration, le
+    chargement des données, l'entraînement du modèle de substitution,
+    l'exécution des solveurs analytique et EF, ainsi que la génération
+    de l'ensemble des graphiques et des tableaux de résultats.
+
+    :return: Aucun retour.
+    :rtype: None
+    """
     # ── Chargement interactif avec "st.status" (Animation UI) ───
     with st.status("⚙️ Initialisation du Système Thermoélastique...", expanded=True) as status:
         st.write("📂 Chargement de la configuration YAML...")
