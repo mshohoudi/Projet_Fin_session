@@ -39,6 +39,15 @@ LIGNE  = "═" * 62
 LIGNE2 = "─" * 62
 
 def banniere():
+    """
+    Affiche la bannière de démarrage du programme.
+
+    La bannière présente le nom du projet, le cours ainsi que les
+    auteurs de l'application.
+
+    :return: Aucun retour.
+    :rtype: None
+    """
     print(f"\n{LIGNE}")
     print("  SYSTÈME THERMOÉLASTIQUE HYBRIDE — FEA 1D & ML 3D")
     print("  MGA 802 PROJET FIN DE SESSION")
@@ -46,14 +55,41 @@ def banniere():
     print(LIGNE)
 
 def section(titre: str):
+    """
+    Affiche un en-tête de section dans le terminal.
+
+    :param titre: Titre de la section.
+    :type titre: str
+
+    :return: Aucun retour.
+    :rtype: None
+    """
     print(f"\n{LIGNE2}")
     print(f"  {titre}")
     print(LIGNE2)
 
 def ok(msg: str):
+    """
+    Affiche un message de confirmation.
+
+    :param msg: Message à afficher.
+    :type msg: str
+
+    :return: Aucun retour.
+    :rtype: None
+    """
     print(f"  ✓  {msg}")
 
 def info(msg: str):
+    """
+    Affiche un message d'information.
+
+    :param msg: Message à afficher.
+    :type msg: str
+
+    :return: Aucun retour.
+    :rtype: None
+    """
     print(f"  ►  {msg}")
 
 
@@ -63,7 +99,24 @@ def info(msg: str):
 
 def saisir_float(invite: str, min_val: float, max_val: float,
                  defaut: float = None) -> float:
-    """Demande un flottant dans [min_val, max_val] avec valeur par défaut."""
+    """
+    Demande à l'utilisateur de saisir une valeur flottante.
+
+    La valeur est validée afin de vérifier qu'elle appartient à
+    l'intervalle spécifié.
+
+    :param invite: Texte affiché à l'utilisateur.
+    :type invite: str
+    :param min_val: Valeur minimale autorisée.
+    :type min_val: float
+    :param max_val: Valeur maximale autorisée.
+    :type max_val: float
+    :param defaut: Valeur par défaut proposée.
+    :type defaut: float, optional
+
+    :return: Valeur saisie par l'utilisateur.
+    :rtype: float
+    """
     while True:
         suffixe = f" [défaut={defaut}]" if defaut is not None else ""
         try:
@@ -80,8 +133,16 @@ def saisir_float(invite: str, min_val: float, max_val: float,
 
 def saisir_conditions(cfg: dict) -> tuple[float, float]:
     """
-    Demande à l'utilisateur la force (kN) et la température (°C).
-    Retourne (force_N, temp_C).
+    Demande les conditions de chargement.
+
+    L'utilisateur saisit la force appliquée et la température qui seront
+    utilisées pour les calculs.
+
+    :param cfg: Dictionnaire de configuration.
+    :type cfg: dict
+
+    :return: Force appliquée [N] et température [°C].
+    :rtype: tuple[float, float]
     """
     section("SAISIE DES CONDITIONS DE CHARGEMENT")
     print()
@@ -105,8 +166,17 @@ def saisir_conditions(cfg: dict) -> tuple[float, float]:
 
 def generer_grille_prediction(cfg: dict) -> pd.DataFrame:
     """
-    Crée une grille 3D de nœuds représentative de la poutre
-    (même résolution que les données Ansys : 41×5×5 = 1025 nœuds).
+    Génère la grille tridimensionnelle utilisée pour les prédictions du
+    modèle de substitution.
+
+    La grille possède la même résolution que les données issues des
+    simulations Ansys.
+
+    :param cfg: Dictionnaire de configuration.
+    :type cfg: dict
+
+    :return: DataFrame contenant les coordonnées des nœuds.
+    :rtype: pandas.DataFrame
     """
     geo = cfg["geometrie"]
     L = geo["longueur"]
@@ -134,7 +204,26 @@ def afficher_rapport(res_ana: dict, res_ef: dict, res_ml: dict,
                      force_N: float, temp_C: float,
                      scores_cv: dict) -> str:
     """
-    Affiche et retourne le rapport comparatif tri-méthodes.
+    Génère et affiche le rapport comparatif des trois méthodes.
+
+    Le rapport compare les résultats obtenus par la solution analytique,
+    le solveur éléments finis et le modèle de substitution.
+
+    :param res_ana: Résultats du solveur analytique.
+    :type res_ana: dict
+    :param res_ef: Résultats du solveur EF.
+    :type res_ef: dict
+    :param res_ml: Résultats du modèle ML.
+    :type res_ml: dict
+    :param force_N: Force appliquée [N].
+    :type force_N: float
+    :param temp_C: Température appliquée [°C].
+    :type temp_C: float
+    :param scores_cv: Résultats de la validation croisée.
+    :type scores_cv: dict
+
+    :return: Rapport complet sous forme de chaîne de caractères.
+    :rtype: str
     """
     force_kN = force_N / 1000.0
 
@@ -243,6 +332,24 @@ def afficher_rapport(res_ana: dict, res_ef: dict, res_ml: dict,
 
 def sauvegarder_rapport(rapport: str, cfg: dict,
                         force_N: float, temp_C: float) -> None:
+    """
+    Sauvegarde le rapport dans un fichier texte.
+
+    Si un fichier du même nom existe déjà, un horodatage est ajouté afin
+    d'éviter son écrasement.
+
+    :param rapport: Rapport à sauvegarder.
+    :type rapport: str
+    :param cfg: Dictionnaire de configuration.
+    :type cfg: dict
+    :param force_N: Force appliquée [N].
+    :type force_N: float
+    :param temp_C: Température appliquée [°C].
+    :type temp_C: float
+
+    :return: Aucun retour.
+    :rtype: None
+    """
     nom = cfg["chemins"]["rapport_txt"]
     # Ajouter le timestamp dans le nom si le fichier existe déjà
     if os.path.exists(nom):
@@ -260,6 +367,24 @@ def sauvegarder_rapport(rapport: str, cfg: dict,
 # ═══════════════════════════════════════════════════════════════════════
 
 def main():
+    """
+    Exécute le programme principal.
+
+    Cette fonction coordonne l'ensemble du flux d'exécution :
+
+    - chargement de la configuration;
+    - chargement des données Ansys;
+    - validation croisée et entraînement du modèle Random Forest;
+    - saisie des conditions de chargement;
+    - résolution analytique;
+    - résolution par éléments finis;
+    - prédiction du modèle de substitution;
+    - génération du rapport comparatif;
+    - affichage des visualisations.
+
+    :return: Aucun retour.
+    :rtype: None
+    """
     banniere()
 
     # ── 1. Configuration ─────────────────────────────────────────────
