@@ -60,12 +60,14 @@ class ModeleSubstitution:
 
     def _creer_pipeline(self) -> Pipeline:
         """
-        Crée le pipeline d'apprentissage automatique pour Random Foresté
+        Crée le pipeline d'apprentissage automatique.
 
-        Returns
-        -------
-        Pipeline
-            Pipeline Scikit-Learn composé d'un modèle Random Forest.
+        Le pipeline est composé d'une normalisation des variables d'entrée
+        suivie d'un modèle de régression basé sur une forêt aléatoire
+        (:class:`sklearn.ensemble.RandomForestRegressor`).
+
+        :return: Pipeline Scikit-Learn utilisé pour l'entraînement et la prédiction.
+        :rtype: sklearn.pipeline.Pipeline
         """
         rf = RandomForestRegressor(
             n_estimators=self.n_estimators,
@@ -84,23 +86,19 @@ class ModeleSubstitution:
 
     def valider(self, df: pd.DataFrame) -> None:
         """
-        Effectue une validation croisée K-Fold pour chaque variable cible.
+        Effectue une validation croisée K-Fold du modèle.
 
-        La méthode évalue séparément les modèles de prédiction pour la contrainte
-        de Von Mises, la contrainte normale selon X et le déplacement selon Y. Le
-        score utilisé est le coefficient de détermination :math:`R^2`.
+        Chaque variable cible est validée indépendamment à l'aide d'une
+        validation croisée K-Fold. Les performances sont évaluées avec le
+        coefficient de détermination :math:`R^2`.
 
-        Parameters
-        ----------
-        df : pandas.DataFrame
-            Jeu de données contenant les colonnes d'entrée définies dans
-            ``FEATURES`` ainsi que les colonnes cibles définies dans ``CIBLES``.
+        :param df: Jeu de données contenant les variables d'entrée et les
+                   variables cibles.
+        :type df: pandas.DataFrame
 
-        Returns
-        -------
-        None
-            Les scores moyens, écarts-types et scores individuels sont stockés
-            dans l'attribut ``scores_cv``.
+        :return: Aucun retour. Les résultats sont stockés dans
+                 :attr:`scores_cv`.
+        :rtype: None
         """
         X_data = df[FEATURES].values
         kf = KFold(n_splits=self.k_fold_splits, shuffle=True,
@@ -141,19 +139,16 @@ class ModeleSubstitution:
 
     def entrainer(self, df: pd.DataFrame) -> None:
         """
-        Entraîne les modèles finaux sur l'ensemble complet des données.
+        Entraîne les modèles Random Forest sur l'ensemble des données.
 
+        Un modèle indépendant est créé pour chaque variable cible.
 
-        Parameters
-        ----------
-        df : pandas.DataFrame
-            Jeu de données d'entraînement contenant les variables d'entrée
-            ``X``, ``Y``, ``Z``, ``force`` et ``temperature``, ainsi que les
-            variables cibles.
+        :param df: Jeu de données d'entraînement.
+        :type df: pandas.DataFrame
 
-        Returns
-        -------
-        None
+        :return: Aucun retour. Les modèles entraînés sont enregistrés dans
+                 :attr:`modeles`.
+        :rtype: None
         """
         X_data = df[FEATURES].values
 
@@ -173,36 +168,26 @@ class ModeleSubstitution:
     #  Prédiction sur une grille de noeuds
     # ---------------------------------------------------------------- #
 
-    def predire(self, df_noeuds: pd.DataFrame,
-                force: float, temp: float) -> pd.DataFrame:
-            """
-    Prédit les grandeurs thermoélastiques sur une grille de nœuds 3D.
+    def predire(self, df_noeuds: pd.DataFrame,force: float, temp: float) -> pd.DataFrame:
+        """
+        Prédit les résultats thermoélastiques sur une grille de nœuds.
 
-    Les conditions de chargement sont ajoutées à chaque nœud avant de lancer
-    la prédiction avec les modèles Random Forest entraînés.
+        Les coordonnées spatiales sont complétées par les conditions de
+        chargement avant d'être transmises aux modèles Random Forest.
 
-    Parameters
-    ----------
-    df_noeuds : pandas.DataFrame
-        DataFrame contenant les coordonnées spatiales des nœuds. Il doit
-        contenir les colonnes ``X``, ``Y`` et ``Z``.
-    force : float
-        Force ponctuelle appliquée à la poutre [N].
-    temp : float
-        Température appliquée à la poutre [°C].
+        :param df_noeuds: Coordonnées des nœuds à prédire.
+        :type df_noeuds: pandas.DataFrame
+        :param force: Force ponctuelle appliquée [N].
+        :type force: float
+        :param temp: Température appliquée [°C].
+        :type temp: float
 
-    Returns
-    -------
-    pandas.DataFrame
-        DataFrame contenant les coordonnées des nœuds, les conditions de
-        chargement et les prédictions disponibles parmi ``von_mises``,
-        ``contrainte_x`` et ``deplacement_y``.
+        :raises RuntimeError: Si le modèle n'a pas été entraîné.
 
-    Raises
-    ------
-    RuntimeError
-        Si la méthode est appelée avant l'entraînement du modèle.
-    """
+        :return: DataFrame contenant les coordonnées des nœuds ainsi que les
+                 prédictions des différentes variables cibles.
+        :rtype: pandas.DataFrame
+        """
         if not self._entraine:
             raise RuntimeError("Le modèle n'a pas encore été entraîné.")
 
@@ -223,23 +208,17 @@ class ModeleSubstitution:
 
     def extraire_valeurs_max(self, df_pred: pd.DataFrame) -> dict:
         """
-        Extrait les valeurs maximales représentatives après filtrage de Saint-Venant.
+        Extrait les valeurs maximales représentatives après application du
+        principe de Saint-Venant.
 
-        Les zones proches de l'encastrement et de l'extrémité libre sont exclues
-        afin de limiter l'influence des singularités locales. Les valeurs maximales
-        absolues sont ensuite extraites pour chaque cible.
+        Les zones proches de l'encastrement et de l'extrémité libre sont
+        exclues afin d'éliminer les singularités locales.
 
-        Parameters
-        ----------
-        df_pred : pandas.DataFrame
-            DataFrame contenant les coordonnées des nœuds et les prédictions du
-            modèle de substitution.
+        :param df_pred: Résultats prédits sur la grille de nœuds.
+        :type df_pred: pandas.DataFrame
 
-        Returns
-        -------
-        dict
-            Dictionnaire contenant les valeurs maximales absolues pour chaque
-            cible : ``von_mises``, ``contrainte_x`` et ``deplacement_y``.
+        :return: Valeurs maximales absolues de chaque variable cible.
+        :rtype: dict
         """
         # Filtre Saint-Venant : exclure les zones singulières
         masque = (
@@ -267,16 +246,14 @@ class ModeleSubstitution:
 
     def importance_features(self) -> dict:
         """
-        Retourne l'importance relative des variables d'entrée pour chaque cible.
+        Retourne l'importance relative des variables d'entrée.
 
-        L'importance des variables est extraite directement de l'attribut
-        ``feature_importances_`` du modèle Random Forest associé à chaque cible.
+        Les importances sont extraites directement des modèles Random Forest
+        entraînés.
 
-        Returns
-        -------
-        dict
-            Dictionnaire contenant, pour chaque cible, l'importance relative des
-            variables ``X``, ``Y``, ``Z``, ``force`` et ``temperature``.
+        :return: Dictionnaire contenant l'importance des variables pour
+                 chaque cible.
+        :rtype: dict
         """
         importances = {}
         for cible, pipeline in self.modeles.items():
