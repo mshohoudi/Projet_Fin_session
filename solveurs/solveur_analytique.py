@@ -31,14 +31,36 @@ class SolveurAnalytique:
 
     def fleche_max(self, F: float) -> float:
         """
-        Flèche maximale à l'extrémité libre (x = L).
-        v_max = F * L³ / (3 * E * I)   [m]
+        Calcule la flèche maximale à l'extrémité libre.
+
+        La solution est obtenue à partir de la théorie des poutres
+        d'Euler-Bernoulli.
+
+        .. math::
+
+            v_{max}=\\frac{FL^3}{3EI}
+
+        :param F: Force ponctuelle appliquée à l'extrémité libre [N].
+        :type F: float
+        :return: Flèche maximale de la poutre [m].
+        :rtype: float
         """
         return (F * self.L**3) / (3.0 * self.E * self.I)
 
     def fleche_en_x(self, F: float, x: np.ndarray) -> np.ndarray:
         """
-        Profil de flèche le long de la poutre.
+        Calcule le profil de flèche le long de la poutre.
+
+        .. math::
+
+            v(x)=\\frac{F x^2 (3L-x)}{6EI}
+
+        :param F: Force ponctuelle appliquée à l'extrémité libre [N].
+        :type F: float
+        :param x: Positions le long de la poutre [m].
+        :type x: numpy.ndarray
+        :return: Flèche calculée pour chaque position.
+        :rtype: numpy.ndarray
         """
         return (F * x**2 * (3.0 * self.L - x)) / (6.0 * self.E * self.I)
 
@@ -48,14 +70,38 @@ class SolveurAnalytique:
 
     def contrainte_flexion_max(self, F: float) -> float:
         """
-        Contrainte de flexion maximale à l'encastrement (x = 0), fibre extrême.
+        Calcule la contrainte maximale de flexion.
+
+        La contrainte est évaluée à l'encastrement à l'aide de la formule
+        de Navier.
+
+        .. math::
+
+            \\sigma = \\frac{Mc}{I}
+
+        :param F: Force ponctuelle appliquée [N].
+        :type F: float
+        :return: Contrainte maximale de flexion [Pa].
+        :rtype: float
         """
         M_max = F * self.L
         return (M_max * self.c) / self.I
 
     def contrainte_thermique(self, T: float) -> float:
         """
-        Contrainte thermique axiale (telle que testée et validée avec Ansys).
+        Calcule la contrainte thermique uniforme.
+
+        La contrainte thermique est calculée en supposant que la dilatation
+        longitudinale est complètement empêchée.
+
+        .. math::
+
+            \\sigma_{th}=E\\alpha\\Delta T
+
+        :param T: Température appliquée [°C].
+        :type T: float
+        :return: Contrainte thermique uniforme [Pa].
+        :rtype: float
         """
         dT = T - self.T0
         return self.E * self.alpha * dT
@@ -63,7 +109,26 @@ class SolveurAnalytique:
     def contrainte_x_en_section(self, F: float, T: float, x: float,
                                   y: np.ndarray) -> np.ndarray:
         """
-        Contrainte normale σ_x en une section x, pour un tableau d'ordonnées y.
+        Calcule la contrainte normale selon l'axe X dans une section de la
+        poutre.
+
+        La contrainte totale est obtenue par superposition de la contrainte
+        de flexion et de la contrainte thermique.
+
+        .. math::
+
+            \\sigma_x(x,y)=\\frac{M(x)y}{I}+E\\alpha\\Delta T
+
+        :param F: Force ponctuelle appliquée [N].
+        :type F: float
+        :param T: Température appliquée [°C].
+        :type T: float
+        :param x: Position de la section le long de la poutre [m].
+        :type x: float
+        :param y: Coordonnées dans la section mesurées depuis l'axe neutre [m].
+        :type y: numpy.ndarray
+        :return: Distribution de la contrainte normale selon X [Pa].
+        :rtype: numpy.ndarray
         """
         M_x = F * (self.L - x)
         sigma_flex = (M_x * y) / self.I
@@ -72,7 +137,18 @@ class SolveurAnalytique:
 
     def von_mises_max(self, F: float, T: float) -> float:
         """
-        Contrainte Von Mises approximée (poutre mince, σ_y ≈ 0, τ ≈ 0).
+        Calcule la contrainte maximale de Von Mises.
+
+        Pour cette modélisation de poutre, seules les contraintes normales
+        sont considérées. La contrainte de Von Mises est donc assimilée à
+        la valeur absolue de la contrainte normale maximale.
+
+        :param F: Force ponctuelle appliquée [N].
+        :type F: float
+        :param T: Température appliquée [°C].
+        :type T: float
+        :return: Contrainte maximale de Von Mises [Pa].
+        :rtype: float
         """
         sigma_x = self.contrainte_flexion_max(F) + self.contrainte_thermique(T)
         return abs(sigma_x)
@@ -83,7 +159,26 @@ class SolveurAnalytique:
 
     def resoudre(self, F: float, T: float) -> dict:
         """
-        Retourne un dictionnaire de tous les résultats analytiques clés.
+        Résout analytiquement le problème thermoélastique.
+
+        Calcule la flèche maximale, les contraintes de flexion, la
+        contrainte thermique, la contrainte normale maximale et la
+        contrainte équivalente de Von Mises.
+
+        :param F: Force ponctuelle appliquée [N].
+        :type F: float
+        :param T: Température appliquée [°C].
+        :type T: float
+
+        :return: Dictionnaire contenant les résultats analytiques.
+
+                 - ``fleche_max_m`` : flèche maximale [m]
+                 - ``contrainte_flex_max_Pa`` : contrainte maximale de flexion [Pa]
+                 - ``contrainte_thermique_Pa`` : contrainte thermique [Pa]
+                 - ``contrainte_x_max_Pa`` : contrainte normale maximale [Pa]
+                 - ``von_mises_max_Pa`` : contrainte maximale de Von Mises [Pa]
+
+        :rtype: dict
         """
         v_max       = self.fleche_max(F)
         sig_flex    = self.contrainte_flexion_max(F)
