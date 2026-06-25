@@ -3,9 +3,13 @@ import numpy as np
 
 class SolveurEF:
     """
-    Résolution FEA 1D d'une poutre Euler-Bernoulli encastrée-libre.
+    Solveur par éléments finis 1D pour une poutre d'Euler-Bernoulli
+    encastrée-libre.
 
-    DDL par noeud : [v_i, θ_i, v_{i+1}, θ_{i+1}]
+    Le modèle utilise deux degrés de liberté par nœud : le déplacement
+    transversal ``v`` et la rotation ``theta``. Chaque élément possède donc
+    quatre degrés de liberté locaux : ``[v1, theta1, v2, theta2]``.
+
     """
 
     def __init__(self, cfg: dict):
@@ -35,8 +39,13 @@ class SolveurEF:
 
     def _matrice_rigidite_elem(self) -> np.ndarray:
         """
-        Matrice de rigidité élémentaire pour un élément de longueur le.
-        DDL locaux : [v1, θ1, v2, θ2]
+        Calcule la matrice de rigidité élémentaire d'un élément poutre.
+
+        La formulation utilisée est celle d'un élément poutre d'Euler-Bernoulli
+        avec quatre degrés de liberté locaux.
+
+        :return: Matrice de rigidité élémentaire de dimension ``4 x 4``.
+        :rtype: numpy.ndarray
         """
         EI = self.E * self.I
         l  = self.le
@@ -56,7 +65,16 @@ class SolveurEF:
     # ---------------------------------------------------------------- #
 
     def _assembler(self) -> np.ndarray:
-        """Assemble la matrice de rigidité globale [nb_ddl × nb_ddl]."""
+        """
+        Assemble la matrice de rigidité globale du système.
+
+        Les matrices élémentaires sont ajoutées à la matrice globale selon la
+        connectivité des degrés de liberté de chaque élément.
+
+        :return: Matrice de rigidité globale de dimension
+                 ``nb_ddl x nb_ddl``.
+        :rtype: numpy.ndarray
+        """
         K = np.zeros((self.nb_ddl, self.nb_ddl))
         ke = self._matrice_rigidite_elem()
 
@@ -74,9 +92,19 @@ class SolveurEF:
 
     def _vecteur_forces(self, F: float, T: float) -> np.ndarray:
         """
-        Construit le vecteur de forces nodales global.
-          - Charge ponctuelle F appliquée au dernier nœud (extrémité libre)
-          - Forces thermiques équivalentes (variation axiale empêchée)
+        Construit le vecteur global des forces nodales.
+
+        La force ponctuelle est appliquée sur le degré de liberté de déplacement
+        transversal du dernier nœud. Dans l'implémentation actuelle, la température
+        n'est pas transformée en force thermique équivalente; elle est seulement
+        utilisée en post-traitement pour calculer la contrainte thermique.
+
+        :param F: Force ponctuelle appliquée à l'extrémité libre [N].
+        :type F: float
+        :param T: Température appliquée [°C].
+        :type T: float
+        :return: Vecteur global des forces nodales.
+        :rtype: numpy.ndarray
         """
         f = np.zeros(self.nb_ddl)
         # Force concentrée en v du dernier nœud
@@ -89,8 +117,27 @@ class SolveurEF:
 
     def _appliquer_cl(self, K: np.ndarray, f: np.ndarray):
         """
-        Encastrement parfait au nœud 0 : v_0 = 0, θ_0 = 0.
-        Méthode de pénalité (très grand nombre) pour rester symétrique.
+        Applique les conditions aux limites de l'encastrement.
+
+        L'encastrement est imposé au premier nœud en bloquant le déplacement
+        transversal et la rotation :
+
+        .. math::
+
+            v_0 = 0
+
+        .. math::
+
+            \\theta_0 = 0
+
+        Les conditions sont imposées par une méthode de pénalité.
+
+        :param K: Matrice de rigidité globale initiale.
+        :type K: numpy.ndarray
+        :param f: Vecteur global des forces nodales initial.
+        :type f: numpy.ndarray
+        :return: Matrice de rigidité et vecteur de forces modifiés.
+        :rtype: tuple[numpy.ndarray, numpy.ndarray]
         """
         K_mod = K.copy()
         f_mod = f.copy()
@@ -111,7 +158,27 @@ class SolveurEF:
 
     def resoudre(self, F: float, T: float) -> dict:
         """
-        Résout K*U = f et extrait les résultats physiques.
+        Résout le système éléments finis et effectue le post-traitement.
+
+        Le système linéaire résolu est :
+
+        .. math::
+
+            KU = f
+
+        où ``K`` est la matrice de rigidité globale, ``U`` le vecteur des
+        déplacements et rotations nodales, et ``f`` le vecteur des forces nodales.
+
+        Après la résolution, la méthode calcule la flèche maximale, le moment
+        fléchissant, les contraintes de flexion, la contrainte thermique et la
+        contrainte équivalente de Von Mises.
+
+        :param F: Force ponctuelle appliquée à l'extrémité libre [N].
+        :type F: float
+        :param T: Température appliquée [°C].
+        :type T: float
+        :return: Dictionnaire contenant les résultats du solveur EF.
+        :rtype: dict
         """
         K = self._assembler()
         f = self._vecteur_forces(F, T)
