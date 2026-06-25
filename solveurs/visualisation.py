@@ -19,6 +19,18 @@ from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
 # ------------------------------------------------------------------ #
 
 def _titre_avec_conditions(titre: str, F: float, T: float) -> str:
+    """
+    Génère un titre de graphique incluant les conditions de chargement.
+
+    :param titre: Titre principal du graphique.
+    :type titre: str
+    :param F: Force appliquée [N].
+    :type F: float
+    :param T: Température appliquée [°C].
+    :type T: float
+    :return: Titre formaté avec la force en kN et la température en °C.
+    :rtype: str
+    """
     return f"{titre}\n(F = {F / 1e3:.1f} kN, T = {T:.0f} °C)"
 
 
@@ -30,7 +42,29 @@ def heatmap_3d(df_pred: pd.DataFrame, cible: str,
                F: float, T: float,
                etiquette: str = None, unite: str = "Pa") -> plt.Figure:
     """
-    Affiche un nuage de points 3D coloré par la valeur de `cible`.
+    Génère une cartographie 3D colorée d'une variable prédite.
+
+    La fonction affiche les nœuds de la poutre dans l'espace ``X``, ``Y`` et
+    ``Z``. La couleur de chaque point représente la valeur de la variable
+    spécifiée par ``cible``.
+
+    :param df_pred: DataFrame contenant les coordonnées des nœuds et les
+                    prédictions du modèle.
+    :type df_pred: pandas.DataFrame
+    :param cible: Nom de la colonne à représenter sous forme de couleur.
+    :type cible: str
+    :param F: Force appliquée [N].
+    :type F: float
+    :param T: Température appliquée [°C].
+    :type T: float
+    :param etiquette: Nom affiché dans la barre de couleur. Si ``None``, le nom
+                      de la cible est utilisé.
+    :type etiquette: str, optional
+    :param unite: Unité affichée dans la barre de couleur.
+    :type unite: str, optional
+    :return: Figure Matplotlib contenant la cartographie 3D. Retourne ``None``
+             si la colonne demandée est absente.
+    :rtype: matplotlib.figure.Figure or None
     """
     if cible not in df_pred.columns:
         print(f"  [AVERTISSEMENT] Colonne '{cible}' absente du DataFrame.")
@@ -83,7 +117,29 @@ def graphique_comparaison(
         L: float
 ) -> plt.Figure:
     """
-    Génère un graphique comparatif à 3 panneaux.
+    Génère une figure comparative entre les solutions analytique, EF et ML.
+
+    La figure contient quatre panneaux :
+
+    - profil de flèche le long de la poutre;
+    - profil de contrainte normale selon ``X``;
+    - comparaison de la flèche maximale;
+    - comparaison de la contrainte de Von Mises maximale.
+
+    :param res_analytique: Résultats retournés par le solveur analytique.
+    :type res_analytique: dict
+    :param res_ef: Résultats retournés par le solveur éléments finis 1D.
+    :type res_ef: dict
+    :param res_ml: Résultats caractéristiques retournés par le modèle ML.
+    :type res_ml: dict
+    :param F: Force appliquée [N].
+    :type F: float
+    :param T: Température appliquée [°C].
+    :type T: float
+    :param L: Longueur totale de la poutre [m].
+    :type L: float
+    :return: Figure Matplotlib contenant les quatre graphiques comparatifs.
+    :rtype: matplotlib.figure.Figure
     """
     fig = plt.figure(figsize=(14, 8))
     fig.suptitle(
@@ -183,7 +239,17 @@ def graphique_comparaison(
 
 def graphique_importance_features(importances: dict) -> plt.Figure:
     """
-    Affiche un graphique d'importance des variables pour chaque cible ML.
+    Génère les graphiques d'importance des variables du modèle ML.
+
+    Chaque sous-graphique représente l'importance relative des variables
+    d'entrée pour une variable cible du modèle Random Forest.
+
+    :param importances: Dictionnaire contenant, pour chaque cible, les
+                        importances associées aux variables d'entrée.
+    :type importances: dict
+    :return: Figure Matplotlib contenant les graphiques d'importance.
+             Retourne ``None`` si aucune importance n'est fournie.
+    :rtype: matplotlib.figure.Figure or None
     """
     cibles = list(importances.keys())
     n = len(cibles)
@@ -231,7 +297,32 @@ def afficher_toutes_les_figures(
         importances: dict,
         F: float, T: float, L: float
 ) -> None:
-    """Lance la génération et l'affichage de toutes les visualisations."""
+    """
+    Génère et affiche toutes les figures de post-traitement.
+
+    Cette fonction crée les cartographies 3D des grandeurs prédites, la figure
+    comparative entre les méthodes analytique, EF et ML, ainsi que les
+    graphiques d'importance des variables lorsque celles-ci sont disponibles.
+
+    :param df_pred: DataFrame contenant les prédictions ML sur la grille 3D.
+    :type df_pred: pandas.DataFrame
+    :param res_analytique: Résultats du solveur analytique.
+    :type res_analytique: dict
+    :param res_ef: Résultats du solveur éléments finis 1D.
+    :type res_ef: dict
+    :param res_ml: Résultats caractéristiques du modèle ML.
+    :type res_ml: dict
+    :param importances: Importance des variables du modèle Random Forest.
+    :type importances: dict
+    :param F: Force appliquée [N].
+    :type F: float
+    :param T: Température appliquée [°C].
+    :type T: float
+    :param L: Longueur totale de la poutre [m].
+    :type L: float
+    :return: Aucun retour. Les figures sont affichées avec ``plt.show()``.
+    :rtype: None
+    """
 
     print("\n  Génération des visualisations...")
 
