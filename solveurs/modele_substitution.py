@@ -1,16 +1,21 @@
 """
 modele_substitution.py
 ======================
-Modèle de substitution par Random Forest (régression multi-cible).
-Prédit, pour un nœud 3D (X, Y, Z) et des conditions (F, T) :
-  - Contrainte Von Mises   [Pa]
-  - Contrainte normale X   [Pa]
-  - Déplacement Y          [m]
 
-Inclut :
-  - Validation croisée K-Fold avec rapport de scores R²
-  - Entraînement final sur 100 % des données
-  - Filtrage par principe de Saint-Venant avant extraction du max
+Modèle de substitution par Random Forest pour une régression multi-cible.
+
+Le modèle prédit, pour un nœud 3D ``(X, Y, Z)`` et des conditions de
+chargement ``(F, T)``, les grandeurs suivantes :
+
+* Contrainte de Von Mises [Pa]
+* Contrainte normale selon X [Pa]
+* Déplacement selon Y [m]
+
+Le module inclut également :
+
+* Une validation croisée K-Fold avec rapport des scores :math:`R^2`
+* Un entraînement final sur 100 % des données
+* Un filtrage selon le principe de Saint-Venant avant extraction des valeurs maximales
 """
 
 import numpy as np
